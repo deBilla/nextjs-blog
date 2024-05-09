@@ -1,26 +1,37 @@
-import React from 'react'
+import React from "react";
+import Posts from "../components/Posts";
 
 export type Post = {
-  userId: number,
-  id: number,
-  title: string,
-  body: string
-}
+  pubDate: Date;
+  link: string;
+  title: string;
+  body: string;
+  author: string;
+  thumbnail: string;
+  description: string;
+  content: string;
+  enclosure: any;
+  categories: string[];
+};
 
-const PostPage = async () => {
-  const res = await fetch('https://jsonplaceholder.typicode.com/posts', {cache: 'no-cache'});
-  const posts: Post[] = await res.json();
+export type MediumResponse = {
+  status: string;
+  feed: any;
+  items: Post[];
+};
+
+const PostsPage = async () => {
+  const res = await fetch(
+    "https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@billa-code",
+    { cache: "no-cache" }
+  );
+  const mediumResponse: MediumResponse = await res.json();
+  const posts = mediumResponse.items;
   return (
-    <div>
-      <h1>Post Page</h1>
-      <h2>{new Date().toLocaleTimeString()}</h2>
-      {
-        posts.map((post) => {
-          return <li key={post.id}>{post.title}</li>
-        })
-      }
-    </div>
-  )
-}
+    <main>
+      <Posts posts = {posts} />
+    </main>
+  );
+};
 
-export default PostPage;
+export default PostsPage;
