@@ -1,5 +1,5 @@
-import { Post } from "@/app/posts/page";
 import React from "react";
+import { Post } from "./Posts";
 
 interface CardProps {
   post: Post;
