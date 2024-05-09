@@ -10,7 +10,7 @@ const Posts: React.FC<PostsProps> = ({posts}) => {
   return (
     <div className="flex flex-wrap">
       {posts.map((post) => {
-        return <Card post={post} />;
+        return <Card key={post.link} post={post} />;
       })}
     </div>
   );
