@@ -15,12 +15,10 @@ const MovieCard: React.FC<CardProps> = ({ movie }) => {
             className="card-title"
             dangerouslySetInnerHTML={{ __html: movie.title }}
           />
-          <p>{movie.body}</p>
         </div>
         <figure>
-          <img src={movie?.enclosure?.link} />
+          <img src={movie?.media?.thumbnail?.url} />
         </figure>
-        <p className="text-center m-4">{movie.categories.toString()}</p>
         <h4 className="text-left m-4">{movie.author}</h4>
       </div>
     </Link>

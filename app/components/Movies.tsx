@@ -1,38 +1,47 @@
 import React from "react";
-import Card from "./Card";
 import MovieCard from "./MovieCard";
+import parse from "rss-to-json";
+
+type RSSThumbnail = {
+  medium: string;
+  url: string;
+}
+
+type RSSMedia = {
+  thumbnail: RSSThumbnail;
+}
 
 export type Movie = {
-  pubDate: Date;
-  link: string;
+  id: string;
   title: string;
-  body: string;
-  author: string;
-  thumbnail: string;
   description: string;
+  link: string;
+  author: string;
+  published: number;
+  created: number;
+  category: string[];
   content: string;
   enclosure: any;
-  categories: string[];
+  media: RSSMedia;
 };
 
-export type TwitterResponse = {
-  status: string;
-  feed: any;
+export type RSSResponse = {
+  title: string;
+  description: any;
+  link: string;
+  image: string;
+  category: any[];
   items: Movie[];
 };
 
 const Movies = async () => {
-  const res = await fetch(
-    "https://api.rss2json.com/v1/api.json?rss_url=https://rss.app/feeds/GAiIchqg3LbdUi1c.xml",
-    { cache: "no-cache" }
-  );
-  const twitterResponse: TwitterResponse = await res.json();
-  const posts = twitterResponse.items;
+  const rssResponse: RSSResponse = await parse("https://rss.app/feeds/GAiIchqg3LbdUi1c.xml");
+  const movies: Movie[] = rssResponse.items;
 
   return (
     <div className="flex flex-wrap">
-      {posts.map((post) => {
-        return <MovieCard key={post.link} movie={post} />;
+      {movies.map((movie) => {
+        return <MovieCard key={movie.link} movie={movie} />;
       })}
     </div>
   );
