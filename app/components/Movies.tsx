@@ -38,8 +38,16 @@ const Movies = async () => {
   const rssResponse: RSSResponse = await parse("https://rss.app/feeds/GAiIchqg3LbdUi1c.xml");
   const rss2Response: RSSResponse = await parse("https://rss.app/feeds/0C8Oov0tMBss0rWl.xml");
   const rss3Response: RSSResponse = await parse("https://rss.app/feeds/4I0piqtTJS26oPhI.xml");
-  const rss4Response: RSSResponse = await parse("https://rss.app/feeds/ixmh9NVBJpzUDgdw.xml");
-  const movies: RSSObject[] = [...rssResponse.items, ...rss2Response.items, ...rss3Response.items, ...rss4Response.items];
+  const rss4Response: RSSResponse = await parse("https://rss.app/feeds/KebA97fhC0nmk4Pe.xml");
+  const movies: RSSObject[] = shuffleArray([...rssResponse.items, ...rss2Response.items, ...rss3Response.items, ...rss4Response.items]);
+
+  function shuffleArray(array: any[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 
   return (
     <div className="flex flex-wrap">
