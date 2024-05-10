@@ -1,23 +1,27 @@
 import React from "react";
-import { Post } from "./Posts";
+import { RSSObject } from "./Movies";
+import Link from "next/link";
 
 interface CardProps {
-  post: Post;
+  rssObject: RSSObject;
 }
 
-const Card: React.FC<CardProps> = ({ post }) => {
+const Card: React.FC<CardProps> = ({ rssObject }) => {
   return (
-    <div className="card w-96 bg-base-100 shadow-xl m-4">
-      <div className="card-body">
-        <h2 className="card-title" dangerouslySetInnerHTML={{ __html: post.title }} />
-        <p>{post.body}</p>
+    <Link href={rssObject.link}>
+      <div className="card w-96 bg-base-100 shadow-xl m-4">
+        <div className="card-body">
+          <h2
+            className="card-title"
+            dangerouslySetInnerHTML={{ __html: rssObject.title }}
+          />
+        </div>
+        <figure>
+          <img src={rssObject?.media?.thumbnail?.url} />
+        </figure>
+        <h4 className="text-left m-4">{rssObject.author}</h4>
       </div>
-      <figure>
-        <img src={post.thumbnail} />
-      </figure>
-      <p className="text-center m-4">{post.categories.toString()}</p>
-      <h4 className="text-left m-4">{post.author}</h4>
-    </div>
+    </Link>
   );
 };
 

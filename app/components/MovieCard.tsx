@@ -1,9 +1,9 @@
 import React from "react";
-import { Movie } from "./Movies";
+import { RSSObject } from "./Movies";
 import Link from "next/link";
 
 interface CardProps {
-  movie: Movie;
+  movie: RSSObject;
 }
 
 const MovieCard: React.FC<CardProps> = ({ movie }) => {
