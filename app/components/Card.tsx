@@ -1,6 +1,6 @@
 import React from "react";
-import { RSSObject } from "./Movies";
 import Link from "next/link";
+import { RSSObject } from "./Posts";
 
 interface CardProps {
   rssObject: RSSObject;
