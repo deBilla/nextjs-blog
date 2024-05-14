@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { RSSObject } from "./Posts";
+import Image from "next/image";
 
 interface CardProps {
   rssObject: RSSObject;
@@ -17,7 +18,7 @@ const Card: React.FC<CardProps> = ({ rssObject }) => {
           />
         </div>
         <figure>
-          <img src={rssObject?.media?.thumbnail?.url} />
+          <Image src={rssObject?.media?.thumbnail?.url} alt={""} />
         </figure>
         <h4 className="text-left m-4">{rssObject.author}</h4>
       </div>
