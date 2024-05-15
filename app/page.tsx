@@ -4,17 +4,17 @@ import PostsPage from "./posts/page";
 export default function Home() {
   return (
     <body className="min-h-screen flex flex-col">
-      <header>
+      <header className="fixed top-0 w-full z-10">
         <div className="navbar bg-base-100">
           <div className="flex-1">
             <a className="btn btn-ghost text-xl">Billa Code</a>
           </div>
         </div>
       </header>
-      <main className="flex-grow">
+      <main className="flex-grow pt-16 mb-16">
         <PostsPage />
       </main>
-      <footer className="footer items-center p-4 bg-neutral text-neutral-content">
+      <footer className="fixed bottom-0 w-full footer items-center p-4 bg-neutral text-neutral-content">
         <aside className="items-center grid-flow-col">
           <svg
             width="36"
