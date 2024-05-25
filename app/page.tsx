@@ -9,6 +9,11 @@ export default function Home() {
           <div className="flex-1">
             <a className="btn btn-ghost text-xl">Billa Code</a>
           </div>
+          <div className="flex-none">
+            <Link href="http://subtitle.billacode.online">
+              <div className="btn btn-ghost">Subtitle App</div>
+            </Link>
+          </div>
         </div>
       </header>
       <main className="flex-grow pt-16 mb-16">
@@ -56,7 +61,10 @@ export default function Home() {
           </Link>
         </nav>
       </footer>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4920647871210204"></script>
+      <script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4920647871210204"
+      ></script>
     </body>
   );
 }
