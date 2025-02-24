@@ -1,6 +1,6 @@
 {
-  "name": "next-test",
-  "version": "0.1.0",
+  "name": "react-portfolio-template",
+  "version": "3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,21 +9,29 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/node": "20.12.10",
-    "@types/react": "18.3.1",
-    "@types/react-dom": "18.3.0",
-    "autoprefixer": "10.4.19",
-    "eslint": "8.57.0",
-    "eslint-config-next": "14.2.3",
-    "next": "14.2.3",
-    "postcss": "8.4.38",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "rss-to-json": "^2.1.1",
-    "tailwindcss": "3.4.3",
-    "typescript": "5.4.5"
+    "@headlessui/react": "^1.6.6",
+    "autoprefixer": "^10.4.7",
+    "custom-cursor-react": "^1.0.5",
+    "gray-matter": "^4.0.3",
+    "gsap": "^3.10.4",
+    "next": "12.1.6",
+    "next-themes": "^0.2.0",
+    "parse-numeric-range": "^1.3.0",
+    "postcss": "^8.4.13",
+    "react": "18.1.0",
+    "react-datepicker": "^4.8.0",
+    "react-dom": "18.1.0",
+    "react-markdown": "^8.0.3",
+    "react-syntax-highlighter": "^15.5.0",
+    "react-textarea-autosize": "^8.3.4",
+    "remark": "^14.0.2",
+    "remark-html": "^15.0.1",
+    "styled-components": "^5.3.5",
+    "tailwindcss": "^3.0.24",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "daisyui": "^4.11.1"
+    "eslint": "8.15.0",
+    "eslint-config-next": "12.1.6"
   }
 }
