@@ -33,10 +33,10 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
 
   const navLinks = [
     { label: "About", section: "about" },
+    { label: "Live Apps", section: "live-apps" },
     { label: "Projects", section: "projects" },
     { label: "GitHub", section: "repositories" },
     { label: "Blog", section: "blog" },
-    { label: "Blogs", section: "__link__/blogs" },
     { label: "Experience", section: "experience" },
     { label: "Contact", section: "contact" },
   ];

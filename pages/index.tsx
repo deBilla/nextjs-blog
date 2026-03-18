@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import HeroSection from "../components/HeroSection";
 import AboutSection from "../components/AboutSection";
 import ServicesSection from "../components/ServicesSection";
+import LiveAppsSection from "../components/LiveAppsSection";
 import ProjectsSection from "../components/ProjectsSection";
 import GitHubSection from "../components/GitHubSection";
 import BlogSection from "../components/BlogSection";
@@ -43,6 +44,7 @@ export default function Home() {
           <HeroSection />
           <AboutSection />
           <ServicesSection />
+          <LiveAppsSection />
           <ProjectsSection />
           <GitHubSection />
           <BlogSection />
