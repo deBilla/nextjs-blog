@@ -20,6 +20,10 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
 
   const handleNav = (section: string) => {
     setMobileOpen(false);
+    if (section.startsWith("__link__")) {
+      router.push(section.replace("__link__", ""));
+      return;
+    }
     if (isHome && onNavigate) {
       onNavigate(section);
     } else {
@@ -32,6 +36,7 @@ const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
     { label: "Projects", section: "projects" },
     { label: "GitHub", section: "repositories" },
     { label: "Blog", section: "blog" },
+    { label: "Blogs", section: "__link__/blogs" },
     { label: "Experience", section: "experience" },
     { label: "Contact", section: "contact" },
   ];
