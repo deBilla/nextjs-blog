@@ -62,7 +62,7 @@ const BlogsIndex: React.FC = () => {
           <div className="pb-20 space-y-6">
             {posts.map((post) => (
               <Link key={post.slug} href={`/blogs/${post.slug}`}>
-                <article className="card group p-6 cursor-pointer">
+                <a className="block card group p-6 cursor-pointer">
                   <div className="flex flex-wrap gap-1.5 mb-3">
                     {post.tags.map((tag) => (
                       <span key={tag} className="tag">
@@ -87,7 +87,7 @@ const BlogsIndex: React.FC = () => {
                     <span className="w-1 h-1 rounded-full bg-gray-600" />
                     <span>{post.readTime}</span>
                   </div>
-                </article>
+                </a>
               </Link>
             ))}
           </div>
