@@ -1,8 +1,12 @@
 import fs from "fs";
 import { join } from "path";
 import matter from "gray-matter";
+import type { NextApiRequest, NextApiResponse } from "next";
 
-export default function handler(req, res) {
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+): void {
   const postsfolder = join(process.cwd(), `/_posts/`);
   if (process.env.NODE_ENV === "development") {
     if (req.method === "POST") {
@@ -17,7 +21,9 @@ export default function handler(req, res) {
           image,
         }),
         "utf-8",
-        (err) => console.log(err)
+        (err) => {
+          if (err) console.log(err);
+        }
       );
       res.status(200).json({ status: "DONE" });
     } else {

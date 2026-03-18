@@ -1,77 +1,179 @@
-@import url("https://fonts.googleapis.com/css2?family=Hind:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "./markdown.css";
 
-* {
-  font-family: "Hind";
+/* ═══════════════════════════════════════════
+   Design System — Dark-first professional
+   ═══════════════════════════════════════════ */
+
+:root {
+  --accent: 99, 102, 241;
+  --accent2: 139, 92, 246;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  @apply dark:bg-black dark:text-white;
+  @apply text-gray-900 dark:text-gray-100;
+  background: #fafafa;
 }
 
-.gradient-circle {
-  position: absolute;
-  pointer-events: none;
-  z-index: 100;
-  top: -30px;
-  height: 40px;
-  width: 100vw;
-  opacity: 0.5;
-  filter: blur(40px);
+html.dark body,
+.dark body {
+  background: #050507;
+}
+
+::selection {
+  background: rgba(var(--accent), 0.2);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--accent), 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--accent), 0.3);
+}
+
+/* ── Ambient background ── */
+.bg-glow {
+  position: fixed;
+  top: -20%;
+  left: -10%;
+  width: 60%;
+  height: 60%;
   background: radial-gradient(
-    circle,
-    rgba(248, 107, 223, 1) 0%,
-    rgba(107, 107, 248, 0.8) 100%
+    ellipse at center,
+    rgba(var(--accent), 0.06) 0%,
+    rgba(var(--accent2), 0.02) 50%,
+    transparent 70%
   );
-}
-.gradient-circle-bottom {
-  position: absolute;
   pointer-events: none;
-  z-index: 100;
-  bottom: -20px;
-  height: 30px;
-  width: 100vw;
-  opacity: 0.5;
-  filter: blur(40px);
+  z-index: 0;
+  filter: blur(80px);
+}
+
+.bg-glow-2 {
+  position: fixed;
+  bottom: -20%;
+  right: -10%;
+  width: 50%;
+  height: 50%;
   background: radial-gradient(
-    circle,
-    rgba(248, 107, 223, 1) 0%,
-    rgba(107, 107, 248, 0.8) 100%
+    ellipse at center,
+    rgba(6, 182, 212, 0.04) 0%,
+    rgba(var(--accent), 0.02) 50%,
+    transparent 70%
   );
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
 }
 
-.gradient-shadow:hover::before {
-  content: "";
-  z-index: -1;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: linear-gradient(-45deg, #45caff 0%, #ff1b6b 100%);
-  transform: translate3d(0px, 20px, 0) scale(0.95);
-  filter: blur(20px);
-  opacity: var(0.7);
-  transition: opacity 0.3s;
-  border-radius: inherit;
+/* ── Typography ── */
+.text-gradient {
+  background: linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* 
-* Prevents issues when the parent creates a 
-* stacking context. (For example, using the transform
-* property )
-*/
-.gradient-shadow:hover::after {
-  content: "";
-  z-index: -1;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: inherit;
-  border-radius: inherit;
+.section-overline {
+  @apply text-xs font-semibold uppercase tracking-[0.2em] mb-4 font-mono;
+  color: rgba(var(--accent), 0.7);
 }
+
+.section-title {
+  @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight;
+}
+
+/* ── Cards ── */
+.card {
+  @apply rounded-2xl border transition-all duration-300;
+  @apply bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg;
+}
+.dark .card {
+  @apply bg-gray-900/50 border-gray-800/60 hover:border-gray-700/80;
+  box-shadow: none;
+}
+.dark .card:hover {
+  background: rgba(17, 17, 27, 0.8);
+  box-shadow: 0 0 40px rgba(var(--accent), 0.03);
+}
+
+/* ── Skill pills ── */
+.pill {
+  @apply px-3 py-1 text-xs font-medium rounded-full transition-all duration-200;
+  background: rgba(var(--accent), 0.08);
+  color: rgba(var(--accent), 0.85);
+  border: 1px solid rgba(var(--accent), 0.1);
+}
+.pill:hover {
+  background: rgba(var(--accent), 0.14);
+  border-color: rgba(var(--accent), 0.25);
+  color: rgb(var(--accent));
+}
+html:not(.dark) .pill {
+  background: rgba(var(--accent), 0.06);
+  color: #4338ca;
+  border-color: rgba(var(--accent), 0.12);
+}
+
+/* ── Tags ── */
+.tag {
+  @apply px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded;
+  background: rgba(var(--accent), 0.1);
+  color: rgba(var(--accent), 0.7);
+}
+
+/* ── Glass effect ── */
+.glass {
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+}
+
+/* ── Link underline hover ── */
+.link-hover {
+  @apply relative inline-block;
+}
+.link-hover::after {
+  content: "";
+  @apply absolute bottom-0 left-0 h-px w-0;
+  background: linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent2)));
+  transition: width 0.3s ease;
+}
+.link-hover:hover::after {
+  @apply w-full;
+}
+
+/* ── Fade-in animation helper ── */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Stagger children ── */
+.stagger-children > *:nth-child(1) { transition-delay: 0ms; }
+.stagger-children > *:nth-child(2) { transition-delay: 80ms; }
+.stagger-children > *:nth-child(3) { transition-delay: 160ms; }
+.stagger-children > *:nth-child(4) { transition-delay: 240ms; }
+.stagger-children > *:nth-child(5) { transition-delay: 320ms; }
+.stagger-children > *:nth-child(6) { transition-delay: 400ms; }
+.stagger-children > *:nth-child(7) { transition-delay: 480ms; }
+.stagger-children > *:nth-child(8) { transition-delay: 560ms; }
+
+/* ── Blog markdown ── */
+@import "./markdown.css";
