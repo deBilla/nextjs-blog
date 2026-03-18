@@ -325,9 +325,17 @@ Session end → lq.end_session()
 
             <p>
               <em>
-                Living LLM is open-source and runs entirely on Apple Silicon. The limbiq library is available on{" "}
+                Living LLM is open-source and runs entirely on Apple Silicon. Check out the{" "}
+                <a href="https://github.com/deBilla/living-llm" target="_blank" rel="noopener noreferrer">
+                  Living LLM repository
+                </a>{" "}
+                on GitHub. The limbiq library is available on{" "}
                 <a href="https://github.com/deBilla/limbiq" target="_blank" rel="noopener noreferrer">
                   GitHub
+                </a>{" "}
+                and{" "}
+                <a href="https://pypi.org/project/limbiq/0.1.0/" target="_blank" rel="noopener noreferrer">
+                  PyPI
                 </a>
                 . The entire project — from architecture design to implementation — was built in collaboration with Claude Opus 4.6 (Anthropic). If you&apos;re interested in building local AI systems that learn and adapt, I&apos;d love your contributions and feedback.
               </em>
