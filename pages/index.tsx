@@ -196,28 +196,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Live Apps */}
-        <section className="mt-16">
-          <h2 className="text-xl font-bold tracking-tight mb-6">Live Apps</h2>
-          <div className="space-y-4">
-            {data.apps.map((app) => (
-              <div key={app.id}>
-                <a
-                  href={app.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium"
-                >
-                  {app.title}
-                </a>
-                <p className="text-sm text-gray-500 mt-0.5">
-                  {app.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* Writing */}
         <section className="mt-16">
           <h2 className="text-xl font-bold tracking-tight mb-4">Writing</h2>

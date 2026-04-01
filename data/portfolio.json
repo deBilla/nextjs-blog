@@ -71,65 +71,43 @@
       "id": "1",
       "title": "Limbiq",
       "description": "Published on PyPI. LLM-agnostic middleware with neurotransmitter-inspired adaptive memory, semantic search, and knowledge graph extraction.",
-      "imageSrc": "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=720&q=80",
-      "url": "https://github.com/deBilla/limbiq",
-      "tags": ["Python", "PyPI", "AI/ML"]
+      "url": "https://github.com/deBilla/limbiq"
     },
     {
       "id": "2",
-      "title": "Living LLM",
-      "description": "Self-improving local AI on Apple Silicon with persistent memory, knowledge graphs, LoRA fine-tuning, and 13-tool ReAct orchestration.",
-      "imageSrc": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=720&q=80",
-      "url": "https://github.com/deBilla/living-llm",
-      "tags": ["Python", "MLX", "Llama"]
+      "title": "PII Guard",
+      "description": "High-performance Rust proxy intercepting LLM API requests, detecting and redacting PII with in-memory vault for re-identification.",
+      "url": "https://github.com/deBilla/pii-guard"
     },
     {
       "id": "3",
-      "title": "PII Guard",
-      "description": "High-performance Rust proxy intercepting LLM API requests, detecting and redacting PII with in-memory vault for re-identification.",
-      "imageSrc": "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=720&q=80",
-      "url": "https://github.com/deBilla/pii-guard",
-      "tags": ["Rust", "Privacy", "Security"]
+      "title": "DrawPro",
+      "description": "E2E encrypted collaborative drawing with zero-knowledge architecture, Yjs CRDT, Redis Pub/Sub, and X25519 ECDH + AES-256-GCM.",
+      "url": "https://github.com/deBilla/drawpro"
     },
     {
       "id": "4",
-      "title": "DrawPro",
-      "description": "E2E encrypted collaborative drawing with zero-knowledge architecture, Yjs CRDT, Redis Pub/Sub, and X25519 ECDH + AES-256-GCM.",
-      "imageSrc": "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?auto=format&fit=crop&w=720&q=80",
-      "url": "https://github.com/deBilla/drawpro",
-      "tags": ["React", "WebSocket", "Crypto"]
+      "title": "CSV-to-PubSub Dataflow",
+      "description": "GCP Dataflow Flex Template reading CSVs from GCS and publishing JSON to Pub/Sub for real-time downstream processing.",
+      "url": "https://github.com/deBilla/csv-to-pubsub-google-dataflow-template"
     },
     {
       "id": "5",
-      "title": "CSV-to-PubSub Dataflow",
-      "description": "GCP Dataflow Flex Template reading CSVs from GCS and publishing JSON to Pub/Sub for real-time downstream processing.",
-      "imageSrc": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=720&q=80",
-      "url": "https://github.com/deBilla/csv-to-pubsub-google-dataflow-template",
-      "tags": ["Python", "GCP", "Apache Beam"]
+      "title": "Kithly",
+      "description": "A modern web application for streamlined digital experiences.",
+      "url": "https://kithly.app"
     },
     {
       "id": "6",
-      "title": "Express-CLI",
-      "description": "CLI tool on npm for scaffolding Express.js projects with PostgreSQL, Joi validation, and extensible service integrations.",
-      "imageSrc": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=720&q=80",
-      "url": "https://github.com/deBilla/express-cli",
-      "tags": ["TypeScript", "npm", "CLI"]
+      "title": "Zylobin",
+      "description": "A platform for smart, efficient online solutions.",
+      "url": "https://zylobin.com"
     },
     {
       "id": "7",
-      "title": "VOD Platform",
-      "description": "Netflix-like VOD solution using AWS media transcoding, CDN distribution, and streaming infrastructure.",
-      "imageSrc": "https://miro.medium.com/v2/resize:fit:720/format:webp/1*Ra7TQDK_kfA_zkXbJAmTFA.png",
-      "url": "https://billa-code.medium.com/list/vod-app-5e73f170371f",
-      "tags": ["AWS", "FFMPEG", "Streaming"]
-    },
-    {
-      "id": "8",
-      "title": "WasteGo",
-      "description": "AI-powered mobile app for waste photo categorization to streamline recyclable collection. Go, Flutter, Python on AWS.",
-      "imageSrc": "https://miro.medium.com/v2/resize:fit:720/format:webp/1*ximROMA8plYu0TT0fm0blA.png",
-      "url": "https://billa-code.medium.com/list/wastegogolang-flutter-and-python-with-aws-1d67384f17c2",
-      "tags": ["Flutter", "Go", "AI"]
+      "title": "Card Promotions",
+      "description": "Find the best credit card promotions and deals in one place.",
+      "url": "https://cardpromotions.org"
     }
   ],
   "services": [
