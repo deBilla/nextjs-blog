@@ -12,7 +12,8 @@ export default function Home() {
           content="Dimuthu Wickramanayake — Senior Platform Engineer building distributed systems and AI infrastructure."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
       </Head>
 
       {/* Top Nav */}
@@ -51,11 +52,11 @@ export default function Home() {
             I grew up in Sri Lanka. Thanks to strong A/L results, I earned a
             free education at the{" "}
             <a
-              href="https://www.pdn.ac.lk/"
+              href="https://www.ce.pdn.ac.lk/"
               target="_blank"
               rel="noopener noreferrer"
             >
-              University of Peradeniya
+              University of Peradeniya, Faculty of Engineering
             </a>
             , where I studied Computer Engineering.
           </p>
