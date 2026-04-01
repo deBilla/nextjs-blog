@@ -24,7 +24,7 @@ const LivingLLMArticle: React.FC = () => {
       <div className="relative z-10">
         <Navbar />
 
-        <article className="max-w-3xl mx-auto px-6 pt-28 pb-20">
+        <article className="max-w-3xl mx-auto px-6 pt-6 pb-20">
           {/* Back link */}
           <Link href="/blogs">
             <a className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-brand-400 transition-colors mb-8">

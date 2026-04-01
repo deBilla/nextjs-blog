@@ -22,74 +22,47 @@ const BlogPost: React.FC<BlogPostPageProps> = ({ post }) => {
   return (
     <>
       <Head>
-        <title>{post.title} — {data.name}</title>
+        <title>
+          {post.title} — {data.name}
+        </title>
         <meta name="description" content={post.preview} />
       </Head>
 
-      <div className="bg-glow" />
-      <div className="bg-glow-2" />
+      <Navbar />
 
-      <div className="relative z-10">
-        <Navbar />
+      <article className="max-w-2xl mx-auto px-6 pt-12 pb-20">
+        <h1 className="text-2xl md:text-3xl font-bold leading-tight tracking-tight">
+          {post.title}
+        </h1>
 
-        <article className="max-w-3xl mx-auto px-6 pt-28 pb-20">
-          {/* Hero image */}
-          {post.image && (
-            <div className="rounded-2xl overflow-hidden mb-10">
-              <img
-                className="w-full h-64 lg:h-80 object-cover"
-                src={post.image}
-                alt={post.title}
-              />
-            </div>
-          )}
+        {post.tagline && (
+          <p className="mt-2 text-sm text-gray-500">{post.tagline}</p>
+        )}
 
-          {/* Title */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight">
-            {post.title}
-          </h1>
+        {post.date && (
+          <p className="mt-2 text-xs text-gray-400">
+            {new Date(post.date).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        )}
 
-          {post.tagline && (
-            <p className="mt-3 text-base text-gray-500 dark:text-gray-400">
-              {post.tagline}
-            </p>
-          )}
+        <hr className="mt-6 border-gray-200" />
 
-          {post.date && (
-            <p className="mt-4 text-xs font-mono text-gray-400 dark:text-gray-600">
-              {new Date(post.date).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
-          )}
+        <div
+          className="prose prose-lg max-w-none mt-8
+            prose-headings:font-bold prose-headings:tracking-tight
+            prose-a:text-gray-900 prose-a:underline hover:prose-a:text-gray-500
+            prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+            prose-pre:bg-gray-50 prose-pre:border prose-pre:border-gray-200
+            prose-img:rounded-xl"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
 
-          {/* Divider */}
-          <div
-            className="mt-6 h-px"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent, rgba(var(--accent), 0.2), transparent)",
-            }}
-          />
-
-          {/* Content */}
-          <div
-            className="prose prose-lg dark:prose-invert max-w-none mt-8
-              prose-headings:font-bold prose-headings:tracking-tight
-              prose-a:text-brand-400 prose-a:no-underline hover:prose-a:underline
-              prose-code:text-brand-300 prose-code:bg-gray-800/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
-              prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-800
-              prose-img:rounded-xl"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
-        </article>
-
-        <div className="max-w-3xl mx-auto px-6">
-          <Footer />
-        </div>
-      </div>
+        <Footer />
+      </article>
     </>
   );
 };

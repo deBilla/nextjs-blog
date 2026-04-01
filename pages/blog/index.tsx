@@ -1,34 +1,41 @@
 import Head from "next/head";
-import Router, { useRouter } from "next/router";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import data from "../../data/portfolio.json";
-import { getAllPosts } from "../../utils/api";
-import type { GetStaticProps } from "next";
 
 interface MediumArticle {
   title: string;
   link: string;
   pubDate: string;
-  thumbnail: string;
-  description: string;
-  categories: string[];
 }
 
-interface BlogProps {
-  posts: Record<string, string>[];
+interface BlogPost {
+  slug: string;
+  title: string;
+  date: string;
+  readTime: string;
 }
 
-const Blog: React.FC<BlogProps> = ({ posts }) => {
-  const router = useRouter();
-  const [mounted, setMounted] = useState(false);
+const deepDives: BlogPost[] = [
+  { slug: "living-llm-neurotransmitter-memory", title: "What If Your LLM Could Remember You? Building a Neurotransmitter-Inspired Memory System for Local Language Models", date: "2026-03-19", readTime: "15 min" },
+  { slug: "traditional-software-engineering-jobs-are-finished", title: "Traditional software engineering jobs are FINISHED!!!!", date: "2026-02-28", readTime: "4 min" },
+  { slug: "handling-rpc-exceptions-in-nestjs-microservices", title: "Handling RPC Exceptions in NestJS Microservices", date: "2025-10-22", readTime: "1 min" },
+  { slug: "nestjs-microservice-to-microservice-communication-using-rpc", title: "NestJS — Microservice to Microservice Communication Using RPC", date: "2025-10-17", readTime: "1 min" },
+  { slug: "my-recycling-app-did-3-pivots-and-0-recycles-a-post-mortem", title: "My Recycling App Did 3 Pivots and 0 Recycles. A Post-Mortem.", date: "2025-10-11", readTime: "4 min" },
+  { slug: "this-is-fine-how-disabling-caching-can-set-your-database-ablaze", title: "This is Fine: How Disabling Caching Can Set Your Database Ablaze", date: "2025-10-11", readTime: "3 min" },
+  { slug: "your-laptops-ai-superpower-is-kinda-dumb-compared-to-real-apis", title: "Your Laptop's \"AI Superpower\" is Kinda Dumb (Compared to Real APIs)", date: "2025-10-10", readTime: "1 min" },
+  { slug: "i-built-a-website-because-sri-lankan-banks-wont-credit-card-deals-aggregator", title: "I Built a Website Because Sri Lankan Banks Won't (Credit Card Deals Aggregator)", date: "2025-10-07", readTime: "4 min" },
+  { slug: "firebase-dynamic-links-deprecated-implement-one-in-house", title: "Firebase dynamic links deprecated — Implement one in house", date: "2025-06-10", readTime: "1 min" },
+  { slug: "creating-a-vod-application-like-netflix-amazon-prime-using-aws-media-converter-s", title: "Creating a VOD application (like Netflix, Amazon prime) using AWS", date: "2025-02-23", readTime: "1 min" },
+  { slug: "estimating-bigquery-result-row-count-without-running-the-whole-query", title: "Estimating Bigquery result row count without running the whole query", date: "2025-01-27", readTime: "1 min" },
+];
+
+const Blog: React.FC = () => {
   const [mediumArticles, setMediumArticles] = useState<MediumArticle[]>([]);
-  const [loadingMedium, setLoadingMedium] = useState(true);
-  const [activeTab, setActiveTab] = useState<"medium" | "local">("medium");
 
   useEffect(() => {
-    setMounted(true);
     fetch(
       "https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@billa-code"
     )
@@ -40,208 +47,94 @@ const Blog: React.FC<BlogProps> = ({ posts }) => {
               title: item.title,
               link: item.link,
               pubDate: item.pubDate,
-              thumbnail: item.thumbnail || "",
-              description:
-                item.description?.replace(/<[^>]*>/g, "").slice(0, 160) +
-                  "..." || "",
-              categories: item.categories || [],
             }))
           );
         }
-        setLoadingMedium(false);
       })
-      .catch(() => setLoadingMedium(false));
+      .catch(() => {});
   }, []);
 
   return (
     <>
       <Head>
         <title>Blog — {data.name}</title>
-        <meta name="description" content="Thoughts on distributed systems, AI, cloud architecture, and open source." />
+        <meta
+          name="description"
+          content="Thoughts on distributed systems, AI, cloud architecture, and open source."
+        />
       </Head>
 
-      <div className="bg-glow" />
-      <div className="bg-glow-2" />
+      <Navbar />
 
-      <div className="relative z-10">
-        <Navbar />
+      <div className="max-w-2xl mx-auto px-6 pt-12 pb-20">
+        <h1 className="text-2xl font-bold tracking-tight">Writing</h1>
+        <p className="mt-2 text-sm text-gray-500">
+          I also write on{" "}
+          <a
+            href="https://medium.com/@billacode"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Medium
+          </a>
+          .
+        </p>
 
-        <div className="max-w-6xl mx-auto px-6">
-          {/* Header */}
-          <section className="pt-28 pb-10">
-            <p className="section-overline">Blog</p>
-            <h1 className="section-title">
-              Writing<span className="text-brand-500">.</span>
-            </h1>
-            <p className="mt-3 text-lg text-gray-500 dark:text-gray-400 max-w-xl">
-              Thoughts on distributed systems, AI, cloud architecture, and open
-              source.
-            </p>
-          </section>
-
-          {/* Tabs */}
-          <div className="flex gap-2 mb-8">
-            <button
-              onClick={() => setActiveTab("medium")}
-              className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 border
-                ${
-                  activeTab === "medium"
-                    ? "bg-brand-500/10 text-brand-400 border-brand-500/30"
-                    : "border-gray-200 dark:border-gray-800 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                }`}
-            >
-              Medium Articles
-            </button>
-            <button
-              onClick={() => setActiveTab("local")}
-              className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 border
-                ${
-                  activeTab === "local"
-                    ? "bg-brand-500/10 text-brand-400 border-brand-500/30"
-                    : "border-gray-200 dark:border-gray-800 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                }`}
-            >
-              Posts ({posts.length})
-            </button>
+        {/* Deep Dives */}
+        <section className="mt-10">
+          <h2 className="text-lg font-semibold tracking-tight mb-4">
+            Deep Dives
+          </h2>
+          <div className="space-y-3">
+            {deepDives.map((post) => (
+              <div key={post.slug} className="text-sm">
+                <Link href={`/blogs/${post.slug}`}>
+                  <a className="font-medium">{post.title}</a>
+                </Link>
+                <span className="text-gray-400 ml-2">
+                  {new Date(post.date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                  })}
+                </span>
+              </div>
+            ))}
           </div>
+        </section>
 
-          {/* Medium Articles */}
-          {activeTab === "medium" && (
-            <div className="pb-20">
-              {loadingMedium ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="rounded-2xl h-64 animate-pulse bg-gray-200 dark:bg-gray-800/50"
-                    />
-                  ))}
+        {/* Medium Articles */}
+        {mediumArticles.length > 0 && (
+          <section className="mt-10">
+            <h2 className="text-lg font-semibold tracking-tight mb-4">
+              Medium
+            </h2>
+            <div className="space-y-3">
+              {mediumArticles.map((article, i) => (
+                <div key={i} className="text-sm">
+                  <a
+                    href={article.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium"
+                  >
+                    {article.title}
+                  </a>
+                  <span className="text-gray-400 ml-2">
+                    {new Date(article.pubDate).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                    })}
+                  </span>
                 </div>
-              ) : mediumArticles.length === 0 ? (
-                <div className="text-center py-20 card">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Unable to load Medium articles. Visit{" "}
-                    <a
-                      href="https://medium.com/@billa-code"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-brand-400 hover:underline"
-                    >
-                      @billa-code on Medium
-                    </a>{" "}
-                    directly.
-                  </p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {mediumArticles.map((article, i) => (
-                    <a
-                      key={i}
-                      href={article.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="card group overflow-hidden"
-                    >
-                      {article.thumbnail && (
-                        <div className="overflow-hidden h-40">
-                          <img
-                            src={article.thumbnail}
-                            alt={article.title}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            loading="lazy"
-                          />
-                        </div>
-                      )}
-                      <div className="p-5">
-                        {article.categories.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            {article.categories.slice(0, 3).map((cat) => (
-                              <span key={cat} className="tag">
-                                {cat}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                        <h3 className="font-semibold text-sm leading-snug group-hover:text-brand-400 transition-colors line-clamp-2">
-                          {article.title}
-                        </h3>
-                        <p className="mt-2 text-xs leading-relaxed text-gray-400 dark:text-gray-500 line-clamp-2">
-                          {article.description}
-                        </p>
-                        <span className="mt-3 block text-[10px] font-mono text-gray-400 dark:text-gray-600">
-                          {new Date(article.pubDate).toLocaleDateString(
-                            "en-US",
-                            { year: "numeric", month: "short", day: "numeric" }
-                          )}
-                        </span>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              )}
+              ))}
             </div>
-          )}
+          </section>
+        )}
 
-          {/* Local posts */}
-          {activeTab === "local" && (
-            <div className="pb-20">
-              {posts.length === 0 ? (
-                <div className="text-center py-20 card">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    No local posts yet.
-                  </p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {posts.map((post) => (
-                    <div
-                      key={post.slug}
-                      onClick={() => Router.push(`/blog/${post.slug}`)}
-                      className="card group cursor-pointer overflow-hidden"
-                    >
-                      <div className="overflow-hidden h-40">
-                        <img
-                          src={post.image}
-                          alt={post.title}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                      </div>
-                      <div className="p-5">
-                        <h3 className="font-semibold text-sm group-hover:text-brand-400 transition-colors line-clamp-2">
-                          {post.title}
-                        </h3>
-                        <p className="mt-2 text-xs text-gray-400 dark:text-gray-500 line-clamp-2">
-                          {post.preview}
-                        </p>
-                        <span className="mt-3 block text-[10px] font-mono text-gray-400 dark:text-gray-600">
-                          {post.date}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          <Footer />
-        </div>
+        <Footer />
       </div>
     </>
   );
-};
-
-export const getStaticProps: GetStaticProps = async () => {
-  const posts = getAllPosts([
-    "slug",
-    "title",
-    "image",
-    "preview",
-    "author",
-    "date",
-  ]);
-  return { props: { posts: [...posts] } };
 };
 
 export default Blog;
