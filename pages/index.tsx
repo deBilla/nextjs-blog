@@ -42,8 +42,21 @@ export default function Home() {
           Hi, I&apos;m Dimuthu
         </h1>
         <p className="mt-3 text-lg text-gray-500">
-          Engineer. I architect distributed systems &amp; AI infrastructure that
-          scale to millions.
+          An Engineer. I architect distributed systems &amp; AI infrastructure
+          that scale to millions.{" "}
+          {data.apps.map((app) => (
+            <a
+              key={app.id}
+              href={app.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-3 py-0.5 text-sm font-medium no-underline
+                bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors
+                ml-1 align-middle"
+            >
+              {app.title}
+            </a>
+          ))}
         </p>
 
         {/* Life Story */}
@@ -168,6 +181,28 @@ export default function Home() {
                 </a>
                 <p className="text-sm text-gray-500 mt-0.5">
                   {project.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Live Apps */}
+        <section className="mt-16">
+          <h2 className="text-xl font-bold tracking-tight mb-6">Live Apps</h2>
+          <div className="space-y-4">
+            {data.apps.map((app) => (
+              <div key={app.id}>
+                <a
+                  href={app.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium"
+                >
+                  {app.title}
+                </a>
+                <p className="text-sm text-gray-500 mt-0.5">
+                  {app.description}
                 </p>
               </div>
             ))}

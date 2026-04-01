@@ -17,6 +17,27 @@
   ],
   "apps": [
     {
+      "id": "0",
+      "title": "Robot Fleet",
+      "description": "Multi-robot fleet management and coordination system.",
+      "url": "https://github.com/deBilla/robot-fleet",
+      "emoji": ""
+    },
+    {
+      "id": "0b",
+      "title": "Limbiq",
+      "description": "LLM-agnostic middleware with neurotransmitter-inspired adaptive memory, semantic search, and knowledge graph extraction.",
+      "url": "https://github.com/deBilla/limbiq",
+      "emoji": ""
+    },
+    {
+      "id": "0c",
+      "title": "TF Sandbox",
+      "description": "Interactive TensorFlow playground for experimenting with neural networks in the browser.",
+      "url": "https://debilla.github.io/tf-sandbox/",
+      "emoji": ""
+    },
+    {
       "id": "1",
       "title": "Kithly",
       "description": "A modern web application for streamlined digital experiences.",
