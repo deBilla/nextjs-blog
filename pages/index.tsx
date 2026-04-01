@@ -71,7 +71,16 @@ export default function Home() {
             >
               University of Peradeniya, Faculty of Engineering
             </a>
-            , where I studied Computer Engineering.
+            , where I studied Computer Engineering. My final year research project was
+            on{" "}
+            <a
+              href="https://www.researchgate.net/publication/330467111_Landing_a_Quadcopter_on_to_a_moving_landing_target_using_Computer_Vision"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              landing a quadcopter on a moving target using computer vision
+            </a>
+            .
           </p>
 
           <p>
