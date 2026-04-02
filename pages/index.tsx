@@ -1,8 +1,31 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import data from "../data/portfolio.json";
 
+interface GitHubRepo {
+  id: number;
+  name: string;
+  html_url: string;
+  stargazers_count: number;
+  fork: boolean;
+}
+
 export default function Home() {
+  const [repos, setRepos] = useState<GitHubRepo[]>([]);
+
+  useEffect(() => {
+    fetch("https://api.github.com/users/deBilla/repos?per_page=100&sort=stars")
+      .then((res) => res.json())
+      .then((data: GitHubRepo[]) => {
+        setRepos(
+          data
+            .filter((r) => !r.fork)
+            .sort((a, b) => b.stargazers_count - a.stargazers_count)
+        );
+      })
+      .catch(() => {});
+  }, []);
   return (
     <>
       <Head>
@@ -62,7 +85,8 @@ export default function Home() {
         {/* Life Story */}
         <section className="mt-10 space-y-5 text-[17px] text-gray-700 leading-[1.8]">
           <p>
-            I grew up in Sri Lanka. Thanks to strong A/L results, I earned a
+            I&apos;m currently living in Singapore. I grew up in Sri Lanka and
+            thanks to strong A/L results, I earned a
             free education at the{" "}
             <a
               href="https://www.ce.pdn.ac.lk/"
@@ -195,6 +219,34 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        {/* GitHub Repos */}
+        {repos.length > 0 && (
+          <section className="mt-16">
+            <h2 className="text-xl font-bold tracking-tight mb-4">
+              GitHub
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {repos.map((repo) => (
+                <a
+                  key={repo.id}
+                  href={repo.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 text-sm no-underline
+                    bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors"
+                >
+                  {repo.name}
+                  {repo.stargazers_count > 0 && (
+                    <span className="text-gray-400 text-xs">
+                      &#9733; {repo.stargazers_count}
+                    </span>
+                  )}
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Writing */}
         <section className="mt-16">
