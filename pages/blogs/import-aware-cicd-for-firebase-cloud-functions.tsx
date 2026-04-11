@@ -226,7 +226,7 @@ jobs:
       - name: Detect affected functions
         id: preview
         run: |
-          CHANGED=$(git diff --name-only origin/${{ "{{" }} github.base_ref {{ "}}" }}...HEAD)
+          CHANGED=$(git diff --name-only origin/${'$'}{{ github.base_ref }}...HEAD)
           DEPLOY=$(CHANGED_FILES="$CHANGED" node .github/scripts/get-changed-functions.js)
           echo "deploy_target=$DEPLOY" >> $GITHUB_OUTPUT
       - name: Post PR comment
@@ -234,10 +234,10 @@ jobs:
         # ... posts/updates a comment listing affected functions
 
   deploy:
-    name: Deploy to ${{ "{{" }} github.ref_name == 'master' && 'Production' || 'Staging' {{ "}}" }}
+    name: Deploy to ${'$'}{{ github.ref_name == 'master' && 'Production' || 'Staging' }}
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    environment: ${{ "{{" }} github.ref_name == 'master' && 'production' || 'staging' {{ "}}" }}
+    environment: ${'$'}{{ github.ref_name == 'master' && 'production' || 'staging' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -253,10 +253,10 @@ jobs:
       - name: Deploy changed functions
         if: steps.changed.outputs.deploy_target != 'NONE'
         run: |
-          firebase deploy --only ${{ "{{" }} steps.changed.outputs.deploy_target {{ "}}" }} \\
-            --project ${{ "{{" }} vars.FIREBASE_PROJECT {{ "}}" }} --non-interactive
+          firebase deploy --only ${'$'}{{ steps.changed.outputs.deploy_target }} \\
+            --project ${'$'}{{ vars.FIREBASE_PROJECT }} --non-interactive
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ "{{" }} runner.temp {{ "}}" }}/sa.json</code></pre>
+          GOOGLE_APPLICATION_CREDENTIALS: ${'$'}{{ runner.temp }}/sa.json</code></pre>
 
 <hr />
 
