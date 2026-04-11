@@ -13,6 +13,7 @@ interface BlogPost {
 }
 
 const posts: BlogPost[] = [
+  { slug: "import-aware-cicd-for-firebase-cloud-functions", title: "Import-Aware CI/CD for Firebase Cloud Functions: Deploy Only What Changed", date: "2026-04-11", readTime: "10 min" },
   { slug: "living-llm-neurotransmitter-memory", title: "What If Your LLM Could Remember You? Building a Neurotransmitter-Inspired Memory System for Local Language Models", date: "2026-03-19", readTime: "15 min" },
   { slug: "traditional-software-engineering-jobs-are-finished", title: "Traditional software engineering jobs are FINISHED!!!!", date: "2026-02-28", readTime: "4 min" },
   { slug: "handling-rpc-exceptions-in-nestjs-microservices", title: "Handling RPC Exceptions in NestJS Microservices", date: "2025-10-22", readTime: "1 min" },
