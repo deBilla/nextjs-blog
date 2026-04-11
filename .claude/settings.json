@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx next:*)",
+      "Bash(ls /Users/dimuthu/nextjs-blog/pages/_document*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
+    ],
+    "additionalDirectories": [
+      "/Users/dimuthu/nextjs-blog/components/BlogEditor",
+      "/Users/dimuthu/nextjs-blog/pages"
+    ]
+  }
+}

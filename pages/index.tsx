@@ -43,7 +43,7 @@ export default function Home() {
       <nav className="max-w-2xl mx-auto px-6 pt-8 pb-4 flex items-center justify-between">
         <span className="font-semibold text-sm">Dimuthu Wickramanayake</span>
         <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-gray-500">
-          <Link href="/blog">Blog</Link>
+          <Link href="/blogs">Blog</Link>
           {data.socials
             .filter((s) => s.title !== "Blog")
             .map((social) => (
@@ -261,7 +261,7 @@ export default function Home() {
             >
               Medium
             </a>
-            . Archived posts are available <Link href="/blog">here</Link>.
+            . Archived posts are available <Link href="/blogs">here</Link>.
           </p>
         </section>
 

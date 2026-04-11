@@ -4,6 +4,8 @@ import React from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import data from "../../data/portfolio.json";
+import { getAllBlogs } from "../../utils/api";
+import type { GetStaticProps } from "next";
 
 interface BlogPost {
   slug: string;
@@ -12,22 +14,11 @@ interface BlogPost {
   readTime: string;
 }
 
-const posts: BlogPost[] = [
-  { slug: "import-aware-cicd-for-firebase-cloud-functions", title: "Import-Aware CI/CD for Firebase Cloud Functions: Deploy Only What Changed", date: "2026-04-11", readTime: "10 min" },
-  { slug: "living-llm-neurotransmitter-memory", title: "What If Your LLM Could Remember You? Building a Neurotransmitter-Inspired Memory System for Local Language Models", date: "2026-03-19", readTime: "15 min" },
-  { slug: "traditional-software-engineering-jobs-are-finished", title: "Traditional software engineering jobs are FINISHED!!!!", date: "2026-02-28", readTime: "4 min" },
-  { slug: "handling-rpc-exceptions-in-nestjs-microservices", title: "Handling RPC Exceptions in NestJS Microservices", date: "2025-10-22", readTime: "1 min" },
-  { slug: "nestjs-microservice-to-microservice-communication-using-rpc", title: "NestJS — Microservice to Microservice Communication Using RPC", date: "2025-10-17", readTime: "1 min" },
-  { slug: "my-recycling-app-did-3-pivots-and-0-recycles-a-post-mortem", title: "My Recycling App Did 3 Pivots and 0 Recycles. A Post-Mortem.", date: "2025-10-11", readTime: "4 min" },
-  { slug: "this-is-fine-how-disabling-caching-can-set-your-database-ablaze", title: "This is Fine: How Disabling Caching Can Set Your Database Ablaze", date: "2025-10-11", readTime: "3 min" },
-  { slug: "your-laptops-ai-superpower-is-kinda-dumb-compared-to-real-apis", title: "Your Laptop's \"AI Superpower\" is Kinda Dumb (Compared to Real APIs)", date: "2025-10-10", readTime: "1 min" },
-  { slug: "i-built-a-website-because-sri-lankan-banks-wont-credit-card-deals-aggregator", title: "I Built a Website Because Sri Lankan Banks Won't (Credit Card Deals Aggregator)", date: "2025-10-07", readTime: "4 min" },
-  { slug: "firebase-dynamic-links-deprecated-implement-one-in-house", title: "Firebase dynamic links deprecated — Implement one in house", date: "2025-06-10", readTime: "1 min" },
-  { slug: "creating-a-vod-application-like-netflix-amazon-prime-using-aws-media-converter-s", title: "Creating a VOD application (like Netflix, Amazon prime) using AWS", date: "2025-02-23", readTime: "1 min" },
-  { slug: "estimating-bigquery-result-row-count-without-running-the-whole-query", title: "Estimating Bigquery result row count without running the whole query", date: "2025-01-27", readTime: "1 min" },
-];
+interface BlogsIndexProps {
+  posts: BlogPost[];
+}
 
-const BlogsIndex: React.FC = () => {
+const BlogsIndex: React.FC<BlogsIndexProps> = ({ posts }) => {
   return (
     <>
       <Head>
@@ -67,6 +58,11 @@ const BlogsIndex: React.FC = () => {
       </div>
     </>
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const posts = getAllBlogs(["slug", "title", "date", "readTime"]);
+  return { props: { posts } };
 };
 
 export default BlogsIndex;
