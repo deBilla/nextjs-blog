@@ -35,6 +35,27 @@ We used [dependency-cruiser](https://github.com/sverweij/dependency-cruiser) to 
 
 ---
 
+## Why Not Cloud Build + Cloud Deploy?
+
+The short answer: **Firebase CLI is your IaC engine**, and replacing it is expensive.
+
+Firebase CLI doesn't just push code — it translates your Node.js function definitions into fully-configured Cloud Run services and Eventarc triggers, handling IAM bindings, VPC connectors, memory and concurrency settings, and service configuration. It reads your `firebase.json` and wires up GCP infrastructure correctly. It's an IaC layer, not just a deployment CLI.
+
+2nd gen Cloud Functions do run on Cloud Run under the hood, so Cloud Deploy *can* technically target them as Cloud Run services — giving you rollback and canary deployments that `firebase deploy` lacks. But to get there, you'd have to rebuild everything Firebase CLI provides for free:
+
+- Write your own Dockerfiles and Cloud Build steps
+- Manually configure each Cloud Run service (memory, concurrency, env, min/max instances)
+- Set up Eventarc triggers for event-driven functions
+- Manage IAM yourself, with no Firebase-managed defaults
+
+That's a lot of IaC to own just to gain rollback and canary support. And you'd still need the same import graph analysis to know *which* services to deploy.
+
+**The import-aware pipeline is the right middle ground:** Firebase CLI stays as the IaC engine — correctly parsing your code and wiring up GCP infrastructure — while the detection layer restricts each deploy to only the functions that actually changed.
+
+The honest trade-off: you give up rollback and progressive rollout. If those become requirements, managing functions as Cloud Run services directly is worth revisiting. For selective deployment without canary needs, it's not the right trade.
+
+---
+
 ## Step 1: The Function Map
 
 Create `.github/function-map.json` — a mapping from route file path to Firebase function name:
