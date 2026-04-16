@@ -5,12 +5,6 @@ readTime: "10 min"
 preview: "How reactive sagas keep complex gamification workflows decoupled, resilient, and maintainable — and why the tradeoffs are worth it."
 ---
 
-# The Saga Pattern in Event-Driven Gamification Systems: Orchestrating Complexity with CQRS
-
-*How reactive sagas keep complex gamification workflows decoupled, resilient, and maintainable — and why the tradeoffs are worth it.*
-
----
-
 ## The Problem with Gamification at Scale
 
 Gamification sounds simple on the surface: user does something, user earns points, user levels up. But the moment you move beyond a toy project, the reality gets complicated fast.
