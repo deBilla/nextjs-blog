@@ -40,7 +40,7 @@
     {
       "id": "1",
       "title": "Kithly",
-      "description": "A modern web application for streamlined digital experiences.",
+      "description": "Group video card platform built end-to-end — React Native Expo app (iOS & Android), Go API, multi-stage FFmpeg video pipeline, HLS transcoding, and S3/CloudFront delivery.",
       "url": "https://kithly.app",
       "emoji": "🚀"
     },
@@ -61,7 +61,7 @@
     {
       "id": "4",
       "title": "DrawPro",
-      "description": "E2E encrypted collaborative drawing with zero-knowledge architecture and real-time sync.",
+      "description": "Zero-knowledge E2EE collaborative whiteboard — X25519 ECDH + AES-256-GCM, Argon2id passcode protection, all encryption client-side via Web Crypto API. Server never sees plaintext.",
       "url": "https://debilla.github.io/drawpro/",
       "emoji": "🎨"
     }
@@ -82,7 +82,7 @@
     {
       "id": "3",
       "title": "DrawPro",
-      "description": "E2E encrypted collaborative drawing with zero-knowledge architecture, Yjs CRDT, Redis Pub/Sub, and X25519 ECDH + AES-256-GCM.",
+      "description": "Full-stack zero-knowledge collaborative diagramming platform. Implements ECIES (X25519 ECDH + HKDF-SHA512 + AES-256-GCM) entirely client-side via Web Crypto API and @noble/curves — private keys protected by Argon2id (128 MB, 4-iter) with PBKDF2-SHA256 one-time recovery codes. Server stores only ciphertext blobs, never plaintext. Backed by Yjs CRDT + Redis Pub/Sub for real-time multi-user sync and JWT rotating refresh tokens.",
       "url": "https://github.com/deBilla/drawpro"
     },
     {
@@ -94,7 +94,7 @@
     {
       "id": "5",
       "title": "Kithly",
-      "description": "A modern web application for streamlined digital experiences.",
+      "description": "Full-stack group video card platform. React Native Expo app (iOS & Android), Go API (Gin, PostgreSQL), multi-stage FFmpeg compilation pipeline, HLS transcoding, direct-to-S3 uploads via pre-signed URLs, Firebase Auth, FCM push notifications, and CloudFront CDN delivery.",
       "url": "https://kithly.app"
     },
     {
