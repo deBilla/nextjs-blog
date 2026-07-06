@@ -38,13 +38,13 @@ Once you can name a person, you describe them with **features**: one wide row pe
 The technique that keeps this sane is **pre-aggregate, then join**. Each source is collapsed to one row per entity *before* joining, so a person who has 400 sessions contributes one row, not 400:
 
 ```sql
-quran_activity AS (
+session_activity AS (
   SELECT account_id,
          COUNT(DISTINCT session_id) AS sessions,
          SUM(duration_seconds)      AS seconds
   FROM sessions GROUP BY account_id
 )
--- then: spine LEFT JOIN quran_activity USING (account_id)
+-- then: spine LEFT JOIN session_activity USING (account_id)
 ```
 
 The subtle trap here is **join-key coverage**. If your behavioural tables key on the account id but your engagement-time table keys on the anonymous id, they cover *different populations*. Anonymous users will have engagement time but null behavioural counts. That's not a bug to hide — it's a real property to document, because it dictates which signals exist for which users. Always know, per feature, which key it joins on and therefore who it can describe.
