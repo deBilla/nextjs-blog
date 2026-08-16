@@ -1,0 +1,141 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import portfolio from "../data/portfolio.json";
+
+const socials = portfolio.socials.filter((s) => s.title !== "Blog");
+---
+
+<BaseLayout
+  title="About"
+  description="Dimuthu Wickramanayake — Senior Platform Engineer working on distributed systems and AI infrastructure."
+>
+  <div class="about">
+    <h1>About</h1>
+
+    <div class="prose body">
+      <p>{portfolio.aboutpara}</p>
+      <p>
+        This site is where I write things down properly — the architecture decisions, the
+        postmortems, and the tradeoffs that only show up once something is in production.
+        Everything is on <a href="/blogs">the writing page</a>, or in
+        <a href="/rss.xml">the feed</a>.
+      </p>
+    </div>
+
+    <section class="block">
+      <h2>What I work on</h2>
+      <dl class="services">
+        {
+          portfolio.services.map((service) => (
+            <div>
+              <dt>{service.title}</dt>
+              <dd>{service.description}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="block">
+      <h2>Elsewhere</h2>
+      <ul class="elsewhere">
+        {
+          socials.map((social) => (
+            <li>
+              <a href={social.link} rel="me noopener noreferrer">
+                {social.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="cv-link">
+        The full work history lives on <a href="/cv">my CV</a>.
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .about {
+    max-width: 44rem;
+  }
+
+  .body {
+    margin-top: 1.75rem;
+    max-width: var(--measure);
+  }
+
+  .block {
+    margin-top: 4rem;
+  }
+
+  .block h2 {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 1.5rem;
+  }
+
+  .services {
+    display: grid;
+    gap: 1.5rem;
+    margin: 0;
+  }
+
+  @media (min-width: 640px) {
+    .services {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem 2rem;
+    }
+  }
+
+  .services dt {
+    font-weight: 600;
+    font-size: var(--step--1);
+  }
+
+  .services dd {
+    margin: 0.35rem 0 0;
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    line-height: 1.55;
+  }
+
+  .elsewhere {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .elsewhere a {
+    display: inline-block;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: var(--step--1);
+    text-decoration: none;
+    color: var(--ink-muted);
+    transition: border-color 0.15s var(--ease), color 0.15s var(--ease);
+  }
+
+  .elsewhere a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .cv-link {
+    margin-top: 1.25rem;
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+
+  .cv-link a {
+    color: var(--accent);
+  }
+</style>

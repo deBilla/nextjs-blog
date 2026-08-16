@@ -1,0 +1,193 @@
+{
+  "name": "Dimuthu Wickramanayake",
+  "headerTaglineOne": "Senior Platform Engineer",
+  "headerTaglineTwo": "I architect distributed systems & AI infrastructure",
+  "headerTaglineThree": "that scale to millions.",
+  "headerTaglineFour": "",
+  "showCursor": false,
+  "showBlog": true,
+  "darkMode": true,
+  "showResume": true,
+  "socials": [
+    { "id": "1", "title": "Github", "link": "https://github.com/deBilla" },
+    { "id": "2", "title": "LinkedIn", "link": "https://www.linkedin.com/in/dimuthu2/" },
+    { "id": "3", "title": "Blog", "link": "https://medium.com/@billacode" },
+    { "id": "4", "title": "Email", "link": "mailto:dimuthu.billa@gmail.com" },
+    { "id": "5", "title": "ResearchGate", "link": "https://www.researchgate.net/profile/Dimuthu-Wickramanayake" }
+  ],
+  "apps": [
+    {
+      "id": "0",
+      "title": "Robot Fleet",
+      "description": "Multi-robot fleet management and coordination system.",
+      "url": "https://github.com/deBilla/robot-fleet",
+      "emoji": ""
+    },
+    {
+      "id": "0b",
+      "title": "Limbiq",
+      "description": "LLM-agnostic middleware with neurotransmitter-inspired adaptive memory, semantic search, and knowledge graph extraction.",
+      "url": "https://github.com/deBilla/limbiq",
+      "emoji": ""
+    },
+    {
+      "id": "0c",
+      "title": "TF Sandbox",
+      "description": "Interactive TensorFlow playground for experimenting with neural networks in the browser.",
+      "url": "https://debilla.github.io/tf-sandbox/",
+      "emoji": ""
+    },
+    {
+      "id": "1",
+      "title": "Kithly",
+      "description": "Group video card platform built end-to-end — React Native Expo app (iOS & Android), Go API, multi-stage FFmpeg video pipeline, HLS transcoding, and S3/CloudFront delivery.",
+      "url": "https://kithly.app",
+      "emoji": "🚀"
+    },
+    {
+      "id": "2",
+      "title": "Zylobin",
+      "description": "A platform for smart, efficient online solutions.",
+      "url": "https://zylobin.com",
+      "emoji": "⚡"
+    },
+    {
+      "id": "3",
+      "title": "Card Promotions",
+      "description": "Find the best credit card promotions and deals in one place.",
+      "url": "https://cardpromotions.org",
+      "emoji": "💳"
+    },
+    {
+      "id": "4",
+      "title": "DrawPro",
+      "description": "Zero-knowledge E2EE collaborative whiteboard — X25519 ECDH + AES-256-GCM, Argon2id passcode protection, all encryption client-side via Web Crypto API. Server never sees plaintext.",
+      "url": "https://debilla.github.io/drawpro/",
+      "emoji": "🎨"
+    }
+  ],
+  "projects": [
+    {
+      "id": "1",
+      "title": "Limbiq",
+      "description": "Published on PyPI. LLM-agnostic middleware with neurotransmitter-inspired adaptive memory, semantic search, and knowledge graph extraction.",
+      "url": "https://github.com/deBilla/limbiq"
+    },
+    {
+      "id": "2",
+      "title": "PII Guard",
+      "description": "High-performance Rust proxy intercepting LLM API requests, detecting and redacting PII with in-memory vault for re-identification.",
+      "url": "https://github.com/deBilla/pii-guard"
+    },
+    {
+      "id": "3",
+      "title": "DrawPro",
+      "description": "Full-stack zero-knowledge collaborative diagramming platform. Implements ECIES (X25519 ECDH + HKDF-SHA512 + AES-256-GCM) entirely client-side via Web Crypto API and @noble/curves — private keys protected by Argon2id (128 MB, 4-iter) with PBKDF2-SHA256 one-time recovery codes. Server stores only ciphertext blobs, never plaintext. Backed by Yjs CRDT + Redis Pub/Sub for real-time multi-user sync and JWT rotating refresh tokens.",
+      "url": "https://github.com/deBilla/drawpro"
+    },
+    {
+      "id": "4",
+      "title": "CSV-to-PubSub Dataflow",
+      "description": "GCP Dataflow Flex Template reading CSVs from GCS and publishing JSON to Pub/Sub for real-time downstream processing.",
+      "url": "https://github.com/deBilla/csv-to-pubsub-google-dataflow-template"
+    },
+    {
+      "id": "5",
+      "title": "Kithly",
+      "description": "Full-stack group video card platform. React Native Expo app (iOS & Android), Go API (Gin, PostgreSQL), multi-stage FFmpeg compilation pipeline, HLS transcoding, direct-to-S3 uploads via pre-signed URLs, Firebase Auth, FCM push notifications, and CloudFront CDN delivery.",
+      "url": "https://kithly.app"
+    },
+    {
+      "id": "6",
+      "title": "Zylobin",
+      "description": "A platform for smart, efficient online solutions.",
+      "url": "https://zylobin.com"
+    },
+    {
+      "id": "7",
+      "title": "Card Promotions",
+      "description": "Find the best credit card promotions and deals in one place.",
+      "url": "https://cardpromotions.org"
+    }
+  ],
+  "services": [
+    {
+      "id": "1",
+      "title": "Platform & Backend Engineering",
+      "description": "High-throughput distributed microservices on Kubernetes with production API platforms, rate limiting, OAuth, and multi-tenant isolation.",
+      "icon": "server"
+    },
+    {
+      "id": "2",
+      "title": "AI/ML Infrastructure",
+      "description": "LLM-powered workflows, inference pipelines, adaptive memory systems, LoRA fine-tuning, and privacy-preserving AI architecture.",
+      "icon": "brain"
+    },
+    {
+      "id": "3",
+      "title": "Cloud & Data Architecture",
+      "description": "Cloud-native on GCP & AWS with real-time streaming (Pub/Sub, Kafka, Kinesis), CDC with Debezium, and IaC with Terraform.",
+      "icon": "cloud"
+    },
+    {
+      "id": "4",
+      "title": "System Design Consultation",
+      "description": "Scalable, resilient distributed architectures specializing in high-concurrency, fault tolerance, and event-driven patterns.",
+      "icon": "design"
+    }
+  ],
+  "aboutpara": "I'm Dimuthu Wickramanayake, a Senior Platform Engineer with 7+ years of experience architecting distributed systems, high-throughput API platforms, and production AI infrastructure across AWS and GCP. I build cloud-native microservices on Kubernetes sustaining thousands of requests per second, real-time data streaming pipelines at petabyte scale, and LLM-powered application workflows. I'm an active open-source contributor — my published libraries include Limbiq (an adaptive AI memory system on PyPI), PII Guard (a Rust privacy proxy for LLMs), and Living LLM (a self-improving local AI system with persistent memory and knowledge graphs). Beyond engineering, I share knowledge through technical writing on Medium.",
+  "resume": {
+    "tagline": "Senior Platform Engineer",
+    "description": "7+ years architecting distributed systems, high-throughput API platforms, and production AI infrastructure across AWS and GCP.",
+    "experiences": [
+      {
+        "id": "1",
+        "dates": "Dec 2022 – Present",
+        "type": "Full Time",
+        "company": "Bitsmedia",
+        "position": "Senior Software Engineer (Backend / Platform)",
+        "bullets": [
+          "Architected high-throughput distributed microservices using Node.js (NestJS) on GKE sustaining 3000+ RPS",
+          "Designed production API platform with rate limiting and HMAC request signing serving millions of users",
+          "Built event-driven streaming pipelines using Pub/Sub and Debezium/Kafka with Dataflow and BigQuery",
+          "Led LLM-powered content generation platform orchestrating multimodal AI inference pipelines",
+          "Optimized Redis caching achieving 40% reduction in API latency",
+          "Owned CI/CD pipelines and IaC deployments across GCP with comprehensive observability"
+        ]
+      },
+      {
+        "id": "2",
+        "dates": "Dec 2020 – Dec 2022",
+        "type": "Full Time",
+        "company": "Sysco Labs",
+        "position": "Senior Software Engineer",
+        "bullets": [
+          "Developed distributed microservices using Java (Spring Boot) on AWS ECS for freight management",
+          "Built real-time streaming pipelines using AWS Kinesis and Lambda",
+          "Implemented OAuth 2.0 and RBAC for enterprise workflows",
+          "Established IaC using Terraform and automated CI/CD with Docker"
+        ]
+      },
+      {
+        "id": "3",
+        "dates": "May 2019 – Dec 2020",
+        "type": "Full Time",
+        "company": "DirectFN",
+        "position": "Software Engineer",
+        "bullets": [
+          "Developed secure backend APIs in Node.js for financial trading systems",
+          "Containerized services using Docker with monitoring and observability"
+        ]
+      }
+    ],
+    "education": {
+      "universityName": "University of Peradeniya",
+      "universityDate": "Nov 2014 – Feb 2019",
+      "universityPara": "Bachelor of Science in Computer Engineering"
+    },
+    "languages": ["TypeScript", "JavaScript", "Python", "Rust", "Java", "Go"],
+    "frameworks": ["NestJS", "Spring Boot", "Express.js", "Apache Beam", "NextJS", "React", "React Native", "Flutter"],
+    "others": ["GCP (GKE, Dataflow, BigQuery)", "AWS (ECS, Lambda, Kinesis)", "Kubernetes", "Docker", "Helm", "Terraform", "PostgreSQL", "Redis", "MongoDB", "Kafka", "Pub/Sub", "Debezium", "Prometheus", "Grafana", "OpenTelemetry", "GitHub Actions", "LLM Pipelines", "LoRA", "MLX"]
+  }
+}

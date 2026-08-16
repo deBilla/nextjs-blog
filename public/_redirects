@@ -1,0 +1,9 @@
+# Legacy routes from the Next.js site. The /blogs/<slug> URLs are unchanged,
+# so only the aliases below need forwarding.
+/blog                /blogs        301
+/blog/*              /blogs/:splat 301
+/posts               /blogs        301
+/posts/*             /blogs/:splat 301
+/resume              /cv           301
+/feed                /rss.xml      301
+/feed.xml            /rss.xml      301

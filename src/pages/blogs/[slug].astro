@@ -1,0 +1,29 @@
+---
+import type { GetStaticPaths } from "astro";
+import { render } from "astro:content";
+import PostLayout from "../../layouts/PostLayout.astro";
+import { getPosts } from "../../utils/posts";
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+
+  return posts.map((post, index) => ({
+    // The slug matches the old Next.js route exactly, so existing links and
+    // any accrued search ranking survive the move.
+    params: { slug: post.id },
+    props: {
+      post,
+      // `posts` is newest-first, so the next index is the older post.
+      prev: posts[index + 1],
+      next: posts[index - 1],
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { post, prev, next } = Astro.props;
+const { Content, headings } = await render(post);
+---
+
+<PostLayout post={post} headings={headings} prev={prev} next={next}>
+  <Content />
+</PostLayout>

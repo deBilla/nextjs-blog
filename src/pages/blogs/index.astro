@@ -1,0 +1,75 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostList from "../../components/PostList.astro";
+import { getPosts, groupByYear } from "../../utils/posts";
+
+const posts = await getPosts();
+const years = groupByYear(posts);
+---
+
+<BaseLayout
+  title="Writing"
+  description="Articles on distributed systems, platform engineering, and AI infrastructure."
+>
+  <header class="head">
+    <h1>Writing</h1>
+    <p>
+      {posts.length} posts on distributed systems, platform engineering, and the parts of
+      AI infrastructure that actually break. <a href="/rss.xml">Subscribe via RSS</a>.
+    </p>
+  </header>
+
+  {
+    years.map(([year, yearPosts]) => (
+      <section class="year">
+        <h2>{year}</h2>
+        <PostList posts={yearPosts} compact />
+      </section>
+    ))
+  }
+</BaseLayout>
+
+<style>
+  .head {
+    max-width: var(--measure);
+    margin-bottom: 3.5rem;
+  }
+
+  .head p {
+    margin-top: 1rem;
+    color: var(--ink-muted);
+  }
+
+  .head a {
+    color: var(--accent);
+  }
+
+  .year {
+    display: grid;
+    gap: 1.25rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .year h2 {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* On wide screens the year label sits out in the margin. */
+  @media (min-width: 900px) {
+    .year {
+      grid-template-columns: 4rem 1fr;
+      gap: 0 2rem;
+      align-items: start;
+    }
+
+    .year h2 {
+      position: sticky;
+      top: 5rem;
+      padding-top: 0.35rem;
+    }
+  }
+</style>

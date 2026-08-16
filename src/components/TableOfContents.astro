@@ -1,0 +1,117 @@
+---
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+// Only h2/h3 — deeper levels make the rail noisy rather than useful.
+const headings = Astro.props.headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  headings.length >= 3 && (
+    <nav class="toc no-print" aria-labelledby="toc-heading">
+      <h2 id="toc-heading">On this page</h2>
+      <ul>
+        {headings.map((heading) => (
+          <li class:list={[`depth-${heading.depth}`]}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<style>
+  .toc {
+    font-size: var(--step--1);
+  }
+
+  .toc h2 {
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.75rem;
+  }
+
+  .toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.5rem;
+    border-left: 1px solid var(--border);
+  }
+
+  .toc li {
+    padding-left: 0.9rem;
+  }
+
+  .toc .depth-3 {
+    padding-left: 1.8rem;
+  }
+
+  .toc a {
+    color: var(--ink-muted);
+    text-decoration: none;
+    line-height: 1.4;
+    display: block;
+  }
+
+  .toc a:hover {
+    color: var(--ink);
+  }
+
+  .toc a[data-active] {
+    color: var(--accent);
+  }
+
+  /* Below the sidebar breakpoint the rail sits inline, above the article. */
+  @media (max-width: 1099px) {
+    .toc {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+  }
+</style>
+
+<script>
+  // Highlight the heading currently in view.
+  const links = new Map<string, HTMLAnchorElement>();
+  document.querySelectorAll<HTMLAnchorElement>(".toc a[href^='#']").forEach((a) => {
+    links.set(decodeURIComponent(a.hash.slice(1)), a);
+  });
+
+  if (links.size > 0) {
+    const targets = [...links.keys()]
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const visible = new Set<string>();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target.id);
+          else visible.delete(entry.target.id);
+        }
+
+        // The topmost visible heading wins.
+        const active = targets.find((t) => visible.has(t.id))?.id;
+        links.forEach((link, id) => {
+          if (id === active) link.setAttribute("data-active", "");
+          else link.removeAttribute("data-active");
+        });
+      },
+      { rootMargin: "-80px 0px -70% 0px", threshold: 0 }
+    );
+
+    targets.forEach((t) => observer.observe(t));
+  }
+</script>
