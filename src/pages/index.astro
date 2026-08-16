@@ -3,19 +3,22 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PostList from "../components/PostList.astro";
 import portfolio from "../data/portfolio.json";
 import { getPosts } from "../utils/posts";
+import { getTopRepos } from "../utils/github";
 import { SITE } from "../site";
 
 const posts = await getPosts();
 const recent = posts.slice(0, 6);
 const featured = portfolio.apps.slice(0, 4);
+const repos = await getTopRepos(6);
 ---
 
 <BaseLayout title={SITE.title} description={SITE.description}>
   <section class="intro">
     <h1>Dimuthu Wickramanayake</h1>
     <p class="tagline">
-      Senior Platform Engineer. I build distributed systems, high-throughput API platforms,
-      and AI infrastructure — and write about what the tradeoffs actually cost.
+      I build AI platform and agent infrastructure — MCP servers, LLM assistants, and the
+      Kubernetes and data platforms underneath them — and write about what the tradeoffs
+      actually cost.
     </p>
     <p class="links">
       <a href="/about">About</a>
@@ -51,6 +54,38 @@ const featured = portfolio.apps.slice(0, 4);
       }
     </ul>
   </section>
+
+  {
+    repos.length > 0 && (
+      <section class="section">
+        <div class="section-head">
+          <h2>On GitHub</h2>
+          <a class="more" href={`https://github.com/deBilla`} rel="noopener noreferrer">
+            All repositories →
+          </a>
+        </div>
+        <ul class="repos">
+          {repos.map((repo) => (
+            <li>
+              <a href={repo.url} rel="noopener noreferrer">
+                <span class="repo-top">
+                  <span class="name">{repo.name}</span>
+                  <span class="stars" title={`${repo.stars} stars`}>
+                    <svg viewBox="0 0 16 16" aria-hidden="true">
+                      <path d="M8 .5l2.2 4.6 5 .7-3.6 3.5.9 5L8 11.9 3.5 14.3l.9-5L.8 5.8l5-.7z" />
+                    </svg>
+                    {repo.stars}
+                  </span>
+                </span>
+                {repo.description && <span class="desc">{repo.description}</span>}
+                {repo.language && <span class="lang">{repo.language}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
 </BaseLayout>
 
 <style>
@@ -160,5 +195,75 @@ const featured = portfolio.apps.slice(0, 4);
     font-size: var(--step--1);
     color: var(--ink-muted);
     line-height: 1.5;
+  }
+
+  .repos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .repos {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .repos a {
+    display: grid;
+    gap: 0.3rem;
+    align-content: start;
+    height: 100%;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: border-color 0.15s var(--ease);
+  }
+
+  .repos a:hover {
+    border-color: var(--accent);
+  }
+
+  .repo-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .repos .name {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+
+  .stars svg {
+    width: 11px;
+    height: 11px;
+    fill: currentColor;
+  }
+
+  .repos .desc {
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+
+  .repos .lang {
+    font-size: 0.78rem;
+    color: var(--ink-faint);
   }
 </style>

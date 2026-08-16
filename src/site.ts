@@ -4,7 +4,7 @@ export const SITE = {
   url: "https://billacode.org",
   title: "Dimuthu Wickramanayake",
   description:
-    "Notes on distributed systems, platform engineering, and AI infrastructure — by Dimuthu Wickramanayake.",
+    "Notes on AI platform and agent infrastructure, distributed systems, and reliability — by Dimuthu Wickramanayake.",
   locale: "en",
 } as const;
 

@@ -1,13 +1,5 @@
 {
   "name": "Dimuthu Wickramanayake",
-  "headerTaglineOne": "Senior Platform Engineer",
-  "headerTaglineTwo": "I architect distributed systems & AI infrastructure",
-  "headerTaglineThree": "that scale to millions.",
-  "headerTaglineFour": "",
-  "showCursor": false,
-  "showBlog": true,
-  "darkMode": true,
-  "showResume": true,
   "socials": [
     { "id": "1", "title": "Github", "link": "https://github.com/deBilla" },
     { "id": "2", "title": "LinkedIn", "link": "https://www.linkedin.com/in/dimuthu2/" },
@@ -136,7 +128,7 @@
       "icon": "design"
     }
   ],
-  "aboutpara": "I'm Dimuthu Wickramanayake, a Senior Platform Engineer with 7+ years of experience architecting distributed systems, high-throughput API platforms, and production AI infrastructure across AWS and GCP. I build cloud-native microservices on Kubernetes sustaining thousands of requests per second, real-time data streaming pipelines at petabyte scale, and LLM-powered application workflows. I'm an active open-source contributor — my published libraries include Limbiq (an adaptive AI memory system on PyPI), PII Guard (a Rust privacy proxy for LLMs), and Living LLM (a self-improving local AI system with persistent memory and knowledge graphs). Beyond engineering, I share knowledge through technical writing on Medium.",
+  "aboutpara": "I'm Dimuthu Wickramanayake, an engineer in Singapore working on AI platform and agent infrastructure, with 7+ years running production systems on GCP and AWS. Most of my recent work is about making LLMs safe to point at real infrastructure: two Model Context Protocol servers my colleagues use daily for incident triage and data questions, and an internal assistant serving 50+ people with fail-closed data isolation and approval-gated writes. Underneath that sits the ordinary, unglamorous platform work that makes it possible — Kubernetes services holding 3,000+ RPS for 50M+ users, a multi-terabyte BigQuery platform, and CI/CD you can audit. I also publish open source, including Limbiq (an adaptive AI memory layer on PyPI), PII Guard (a Rust privacy proxy for LLMs), and platform-mcp.",
   "resume": {
     "tagline": "AI Platform & Agent Infrastructure Engineer",
     "location": "Singapore",
