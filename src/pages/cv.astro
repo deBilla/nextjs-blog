@@ -3,16 +3,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import portfolio from "../data/portfolio.json";
 import { SITE } from "../site";
 
-const { resume, socials, projects } = portfolio;
+const { resume, socials } = portfolio;
 const email = socials.find((s) => s.title === "Email")?.link.replace("mailto:", "");
 const contactLinks = socials.filter((s) => s.title !== "Email" && s.title !== "Blog");
-const highlighted = projects.slice(0, 4);
-
-const skillGroups = [
-  { label: "Languages", items: resume.languages },
-  { label: "Frameworks", items: resume.frameworks },
-  { label: "Platform & Data", items: resume.others },
-];
 ---
 
 <BaseLayout
@@ -26,6 +19,7 @@ const skillGroups = [
         <p class="role">{resume.tagline}</p>
       </div>
       <ul class="contact">
+        <li>{resume.location}</li>
         {email && <li><a href={`mailto:${email}`}>{email}</a></li>}
         {
           contactLinks.map((social) => (
@@ -55,6 +49,9 @@ const skillGroups = [
               </h3>
               <p class="dates">{job.dates}</p>
             </div>
+            <p class="context">
+              {job.context} <span class="at">·</span> {job.location}
+            </p>
             <ul>
               {job.bullets.map((bullet) => (
                 <li>{bullet}</li>
@@ -69,7 +66,7 @@ const skillGroups = [
       <h2>Selected work</h2>
       <ul class="work">
         {
-          highlighted.map((project) => (
+          resume.selectedWork.map((project) => (
             <li>
               <a href={project.url} rel="noopener noreferrer">
                 {project.title}
@@ -85,7 +82,7 @@ const skillGroups = [
       <h2>Skills</h2>
       <dl class="skills">
         {
-          skillGroups.map((group) => (
+          resume.skills.map((group) => (
             <div>
               <dt>{group.label}</dt>
               <dd>{group.items.join(" · ")}</dd>
@@ -221,8 +218,14 @@ const skillGroups = [
     white-space: nowrap;
   }
 
+  .context {
+    margin-top: 0.15rem;
+    font-size: var(--step--1);
+    color: var(--ink-faint);
+  }
+
   .job ul {
-    margin: 0.7rem 0 0;
+    margin: 0.6rem 0 0;
     padding-left: 1.1rem;
     display: grid;
     gap: 0.35rem;

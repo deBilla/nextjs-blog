@@ -138,56 +138,120 @@
   ],
   "aboutpara": "I'm Dimuthu Wickramanayake, a Senior Platform Engineer with 7+ years of experience architecting distributed systems, high-throughput API platforms, and production AI infrastructure across AWS and GCP. I build cloud-native microservices on Kubernetes sustaining thousands of requests per second, real-time data streaming pipelines at petabyte scale, and LLM-powered application workflows. I'm an active open-source contributor — my published libraries include Limbiq (an adaptive AI memory system on PyPI), PII Guard (a Rust privacy proxy for LLMs), and Living LLM (a self-improving local AI system with persistent memory and knowledge graphs). Beyond engineering, I share knowledge through technical writing on Medium.",
   "resume": {
-    "tagline": "Senior Platform Engineer",
-    "description": "7+ years architecting distributed systems, high-throughput API platforms, and production AI infrastructure across AWS and GCP.",
+    "tagline": "AI Platform & Agent Infrastructure Engineer",
+    "location": "Singapore",
+    "description": "AI platform engineer with 7+ years operating production systems on GCP and AWS. I ship LLM infrastructure that an engineering team depends on daily — two Model Context Protocol servers used in production by 10+ engineers, and a 50-user LangGraph assistant hardened with fail-closed data isolation, approval-gated writes, and quota-aware concurrency control. Underneath sits consumer-scale platform work: Kubernetes services sustaining 3,000+ RPS for 50M+ users, and a 35% quarter-over-quarter cut in critical incidents.",
     "experiences": [
       {
         "id": "1",
         "dates": "Dec 2022 – Present",
-        "type": "Full Time",
         "company": "Bitsmedia",
-        "position": "Senior Software Engineer (Backend / Platform)",
+        "context": "MuslimPro — 170M+ downloads, 50M active users",
+        "position": "Senior Software Engineer (Platform / Reliability)",
+        "location": "Singapore",
         "bullets": [
-          "Architected high-throughput distributed microservices using Node.js (NestJS) on GKE sustaining 3000+ RPS",
-          "Designed production API platform with rate limiting and HMAC request signing serving millions of users",
-          "Built event-driven streaming pipelines using Pub/Sub and Debezium/Kafka with Dataflow and BigQuery",
-          "Led LLM-powered content generation platform orchestrating multimodal AI inference pipelines",
-          "Optimized Redis caching achieving 40% reduction in API latency",
-          "Owned CI/CD pipelines and IaC deployments across GCP with comprehensive observability"
+          "Shipped 2 internal Model Context Protocol (MCP) servers now used in production by 10+ engineers, exposing 15+ read-only cloud-observability and BigQuery tools to AI assistants for incident triage, resource inventory, cost analysis, and plain-language data questions, with defence-in-depth read-only guarantees and per-query cost caps",
+          "Built and operate Habibi, an internal multi-user AI assistant serving 50+ users on GCP (Terraform VM, FastAPI + LangGraph + MongoDB + Qdrant), engineered for reliability: bounded-concurrency gate with exponential backoff against Vertex AI quota, fail-closed per-user data isolation, self-healing OAuth re-auth, approval-gated external writes with audit logging, Fernet-encrypted tokens, and a SELECT-only byte-capped BigQuery proxy",
+          "Built and own the analytics data platform on BigQuery — Pub/Sub event ingestion, scheduled ETL and batch jobs, and operational-database to warehouse sync feeding ~5TB of datasets, plus modelled reporting tables and dashboards consumed by business teams",
+          "Operated high-throughput microservices on GKE sustaining 3,000+ RPS during peak seasonal traffic, with autoscaling, Pub/Sub event-driven fault isolation, real-time WebSocket delivery, and production monitoring and alerting",
+          "Led production incident investigations and root-cause analysis, introducing monitoring and alerting improvements that reduced critical incidents 35% quarter-over-quarter",
+          "Designed a hardened production GKE environment for a fleet of 10–20 microservices: private cluster with disabled public endpoints, Workload Identity for pod-level IAM, custom VPC with NAT gateway, bastion-only control-plane access, and Kubernetes Gateway API load balancing",
+          "Built auditable CI/CD with Terraform plan/apply via GitHub Actions and Cloud Build using keyless OIDC (Workload Identity Federation), GCS state backend, and manual production approval gates across 3 GCP projects",
+          "Cut deployment lead time 80% with an import-aware selective deployment pipeline using static dependency-graph analysis — Cloud Functions deploys dropped from 15 minutes to under 3 minutes per commit",
+          "Orchestrated GDPR user deletion across ~20 distributed services using Google Workflows with compensation handlers, idempotency guarantees, and full audit trails",
+          "Built the Qalbox OTT streaming pipeline end-to-end for a 1,000+ title catalogue serving 2M+ monthly active viewers, connecting a Next.js admin CMS to Tencent VOD transcoding via Cloud Run functions and Firestore, with Widevine/FairPlay DRM and in-app-subscription entitlement across mobile, web, and Smart TV",
+          "Reduced API latency 40% on high-concurrency endpoints through Redis caching, connection pooling, and query optimisation across MongoDB and PostgreSQL",
+          "Mentored 3–5 engineers through code and design reviews, and authored technical writing on CI/CD and microservice patterns"
         ]
       },
       {
         "id": "2",
         "dates": "Dec 2020 – Dec 2022",
-        "type": "Full Time",
         "company": "Sysco Labs",
+        "context": "Freight rate management — logistics and supply chain",
         "position": "Senior Software Engineer",
+        "location": "Sri Lanka",
         "bullets": [
-          "Developed distributed microservices using Java (Spring Boot) on AWS ECS for freight management",
-          "Built real-time streaming pipelines using AWS Kinesis and Lambda",
-          "Implemented OAuth 2.0 and RBAC for enterprise workflows",
-          "Established IaC using Terraform and automated CI/CD with Docker"
+          "Owned 3 freight-rate-management platforms end-to-end — FRDT, CFM, and SID — on a centralised team reconciling freight rates across 185 operating companies, streaming 100k+ rate records per day through AWS Kinesis into Java (Spring Boot) services so distribution costs stayed consistent and auditable",
+          "Built 5+ distributed backend microservices in Java (Spring Boot) on AWS ECS at 99.9% uptime, with real-time pipelines on AWS Kinesis and Lambda",
+          "Established Terraform IaC and automated CI/CD that cut deployment time 70% while improving release stability, and improved critical API performance 60% via PostgreSQL indexing, query tuning, and read replicas",
+          "Implemented OAuth 2.0 across 2 identity providers (Amazon Cognito and Azure AD), and mentored engineers on microservice design and cloud-native principles"
         ]
       },
       {
         "id": "3",
         "dates": "May 2019 – Dec 2020",
-        "type": "Full Time",
         "company": "DirectFN",
+        "context": "Financial technology — real-time trading",
         "position": "Software Engineer",
+        "location": "Sri Lanka",
         "bullets": [
-          "Developed secure backend APIs in Node.js for financial trading systems",
-          "Containerized services using Docker with monitoring and observability"
+          "Developed secure backend services for a real-time financial trading platform: encrypted file processing with token-based access control, audit logging, Docker containerisation, and production monitoring"
         ]
+      }
+    ],
+    "selectedWork": [
+      {
+        "id": "1",
+        "title": "platform-mcp",
+        "description": "Read-only MCP server turning a GCP project into an autonomous SRE surface — 15 observability tools across logs, metrics, errors, cost, recommenders, and inventory, with defence-in-depth read-only enforcement.",
+        "url": "https://github.com/deBilla/platform-mcp"
+      },
+      {
+        "id": "2",
+        "title": "Limbiq",
+        "description": "Neurotransmitter-inspired adaptive memory layer for LLMs — FAISS vector search, self-attention encoder, and knowledge-graph extraction. Published on PyPI.",
+        "url": "https://github.com/deBilla/limbiq"
+      },
+      {
+        "id": "3",
+        "title": "marsClaw",
+        "description": "Multi-channel LLM chat agent on the Claude Agent SDK and Gemini, with its own MCP server for Gmail, Calendar, and Drive tools, and a hardened security model.",
+        "url": "https://github.com/deBilla/marsclaw"
+      },
+      {
+        "id": "4",
+        "title": "FleetOS",
+        "description": "Distributed humanoid-robot fleet platform — 17 Go services over gRPC and Kafka, Temporal workflows, Kubeflow GPU training, and a Spark/ClickHouse analytics path.",
+        "url": "https://github.com/deBilla/robot-fleet"
+      },
+      {
+        "id": "5",
+        "title": "Kithly",
+        "description": "Group video card product shipped end-to-end — React Native (Expo) app on iOS and Android, Go API, multi-stage FFmpeg pipeline, HLS transcoding, and S3/CloudFront delivery.",
+        "url": "https://kithly.app"
+      }
+    ],
+    "skills": [
+      {
+        "label": "AI & Agents",
+        "items": ["Model Context Protocol (MCP)", "LangGraph", "Claude Agent SDK", "Vertex AI", "Gemini", "RAG / vector search (FAISS, Qdrant)", "LLM agent guardrails", "Whisper STT / TTS"]
+      },
+      {
+        "label": "Languages",
+        "items": ["Python", "TypeScript / JavaScript", "Go", "Java"]
+      },
+      {
+        "label": "Platform & Cloud",
+        "items": ["GKE / Kubernetes", "Terraform", "Cloud Deploy / Skaffold", "Cloud Build", "GitHub Actions", "Workload Identity / OIDC", "Docker", "GCP (Cloud Run, Cloud Functions, VPC, Cloud VPN)", "AWS (ECS, Lambda, Kinesis, Cognito, RDS, S3, CloudFront)"]
+      },
+      {
+        "label": "Data",
+        "items": ["BigQuery", "Pub/Sub", "Apache Beam / Dataflow", "Google Workflows", "PostgreSQL", "MongoDB", "Firestore", "Redis"]
+      },
+      {
+        "label": "Reliability & Security",
+        "items": ["Incident response & RCA", "OpenTelemetry", "Prometheus", "Grafana", "Cloud Logging / Monitoring", "OAuth 2.0 / OIDC / JWT", "HMAC / AES-256 request signing", "GDPR automation", "Secrets management (GCP Secret Manager, AWS Secrets Manager)"]
+      },
+      {
+        "label": "Frontend",
+        "items": ["React", "Next.js", "React Native / Expo", "Node.js / Express", "NestJS", "Spring Boot"]
       }
     ],
     "education": {
       "universityName": "University of Peradeniya",
       "universityDate": "Nov 2014 – Feb 2019",
-      "universityPara": "Bachelor of Science in Computer Engineering"
-    },
-    "languages": ["TypeScript", "JavaScript", "Python", "Rust", "Java", "Go"],
-    "frameworks": ["NestJS", "Spring Boot", "Express.js", "Apache Beam", "NextJS", "React", "React Native", "Flutter"],
-    "others": ["GCP (GKE, Dataflow, BigQuery)", "AWS (ECS, Lambda, Kinesis)", "Kubernetes", "Docker", "Helm", "Terraform", "PostgreSQL", "Redis", "MongoDB", "Kafka", "Pub/Sub", "Debezium", "Prometheus", "Grafana", "OpenTelemetry", "GitHub Actions", "LLM Pipelines", "LoRA", "MLX"]
+      "universityPara": "BSc in Computer Engineering"
+    }
   }
 }
