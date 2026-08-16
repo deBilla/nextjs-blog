@@ -1,6 +1,6 @@
 ---
 import { Font } from "astro:assets";
-import { SITE, GA_ID } from "../site";
+import { SITE, GA_ID, ADSENSE_CLIENT } from "../site";
 import "../styles/global.css";
 
 interface Props {
@@ -82,6 +82,14 @@ const fullTitle = title === SITE.title ? title : `${title} — ${SITE.name}`;
         gtag("js", new Date());
         gtag("config", GA_ID);
       </script>
+
+      {/* Google AdSense */}
+      <script
+        is:inline
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+        crossorigin="anonymous"
+      />
     </>
   )
 }

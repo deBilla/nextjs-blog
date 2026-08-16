@@ -11,6 +11,9 @@ export const SITE = {
 /** GA4 measurement ID. Only loaded in production builds. */
 export const GA_ID = "G-JNMSN5FHDJ";
 
+/** AdSense publisher ID. Must match the entry in public/ads.txt. */
+export const ADSENSE_CLIENT = "ca-pub-4067803003775557";
+
 export const NAV = [
   { href: "/blogs", label: "Writing" },
   { href: "/about", label: "About" },
