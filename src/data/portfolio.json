@@ -1,105 +1,80 @@
 {
   "name": "Dimuthu Wickramanayake",
   "socials": [
-    { "id": "1", "title": "Github", "link": "https://github.com/deBilla" },
-    { "id": "2", "title": "LinkedIn", "link": "https://www.linkedin.com/in/dimuthu2/" },
-    { "id": "3", "title": "Blog", "link": "https://medium.com/@billacode" },
-    { "id": "4", "title": "Email", "link": "mailto:dimuthu.billa@gmail.com" },
-    { "id": "5", "title": "ResearchGate", "link": "https://www.researchgate.net/profile/Dimuthu-Wickramanayake" }
-  ],
-  "apps": [
-    {
-      "id": "0",
-      "title": "Robot Fleet",
-      "description": "Multi-robot fleet management and coordination system.",
-      "url": "https://github.com/deBilla/robot-fleet",
-      "emoji": ""
-    },
-    {
-      "id": "0b",
-      "title": "Limbiq",
-      "description": "LLM-agnostic middleware with neurotransmitter-inspired adaptive memory, semantic search, and knowledge graph extraction.",
-      "url": "https://github.com/deBilla/limbiq",
-      "emoji": ""
-    },
-    {
-      "id": "0c",
-      "title": "TF Sandbox",
-      "description": "Interactive TensorFlow playground for experimenting with neural networks in the browser.",
-      "url": "https://debilla.github.io/tf-sandbox/",
-      "emoji": ""
-    },
     {
       "id": "1",
-      "title": "Kithly",
-      "description": "Group video card platform built end-to-end — React Native Expo app (iOS & Android), Go API, multi-stage FFmpeg video pipeline, HLS transcoding, and S3/CloudFront delivery.",
-      "url": "https://kithly.app",
-      "emoji": "🚀"
+      "title": "Github",
+      "link": "https://github.com/deBilla"
     },
     {
       "id": "2",
-      "title": "Zylobin",
-      "description": "A platform for smart, efficient online solutions.",
-      "url": "https://zylobin.com",
-      "emoji": "⚡"
+      "title": "LinkedIn",
+      "link": "https://www.linkedin.com/in/dimuthu2/"
     },
     {
       "id": "3",
-      "title": "Card Promotions",
-      "description": "Find the best credit card promotions and deals in one place.",
-      "url": "https://cardpromotions.org",
-      "emoji": "💳"
+      "title": "Blog",
+      "link": "https://medium.com/@billacode"
     },
     {
       "id": "4",
-      "title": "DrawPro",
-      "description": "Zero-knowledge E2EE collaborative whiteboard — X25519 ECDH + AES-256-GCM, Argon2id passcode protection, all encryption client-side via Web Crypto API. Server never sees plaintext.",
-      "url": "https://debilla.github.io/drawpro/",
-      "emoji": "🎨"
-    }
-  ],
-  "projects": [
-    {
-      "id": "1",
-      "title": "Limbiq",
-      "description": "Published on PyPI. LLM-agnostic middleware with neurotransmitter-inspired adaptive memory, semantic search, and knowledge graph extraction.",
-      "url": "https://github.com/deBilla/limbiq"
-    },
-    {
-      "id": "2",
-      "title": "PII Guard",
-      "description": "High-performance Rust proxy intercepting LLM API requests, detecting and redacting PII with in-memory vault for re-identification.",
-      "url": "https://github.com/deBilla/pii-guard"
-    },
-    {
-      "id": "3",
-      "title": "DrawPro",
-      "description": "Full-stack zero-knowledge collaborative diagramming platform. Implements ECIES (X25519 ECDH + HKDF-SHA512 + AES-256-GCM) entirely client-side via Web Crypto API and @noble/curves — private keys protected by Argon2id (128 MB, 4-iter) with PBKDF2-SHA256 one-time recovery codes. Server stores only ciphertext blobs, never plaintext. Backed by Yjs CRDT + Redis Pub/Sub for real-time multi-user sync and JWT rotating refresh tokens.",
-      "url": "https://github.com/deBilla/drawpro"
-    },
-    {
-      "id": "4",
-      "title": "CSV-to-PubSub Dataflow",
-      "description": "GCP Dataflow Flex Template reading CSVs from GCS and publishing JSON to Pub/Sub for real-time downstream processing.",
-      "url": "https://github.com/deBilla/csv-to-pubsub-google-dataflow-template"
+      "title": "Email",
+      "link": "mailto:dimuthu.billa@gmail.com"
     },
     {
       "id": "5",
-      "title": "Kithly",
-      "description": "Full-stack group video card platform. React Native Expo app (iOS & Android), Go API (Gin, PostgreSQL), multi-stage FFmpeg compilation pipeline, HLS transcoding, direct-to-S3 uploads via pre-signed URLs, Firebase Auth, FCM push notifications, and CloudFront CDN delivery.",
-      "url": "https://kithly.app"
+      "title": "ResearchGate",
+      "link": "https://www.researchgate.net/profile/Dimuthu-Wickramanayake"
+    }
+  ],
+  "apps": [
+    {
+      "id": "1",
+      "title": "platform-mcp",
+      "description": "Read-only MCP server exposing 15 GCP observability tools across logs, metrics, cost and asset inventory, so an LLM agent can triage incidents and find savings without ever mutating infrastructure. In production use by my team.",
+      "url": "https://github.com/deBilla/platform-mcp"
+    },
+    {
+      "id": "2",
+      "title": "bigquery-mcp",
+      "description": "MCP server for plain-language questions over BigQuery. Dry-run cost estimation, tiered confirmation, a hard per-query scan cap, and SELECT-only execution under each user’s own IAM credentials.",
+      "url": "https://github.com/deBilla/bigquery-mcp"
+    },
+    {
+      "id": "3",
+      "title": "Limbiq",
+      "description": "Neurotransmitter-inspired memory layer that makes any LLM appear to learn across conversations — FAISS vector search plus a knowledge graph, with no change to model weights. Published on PyPI.",
+      "url": "https://github.com/deBilla/limbiq"
+    },
+    {
+      "id": "4",
+      "title": "marsClaw",
+      "description": "Multi-channel LLM agent across Telegram, Slack and WhatsApp on the Claude Agent SDK, with provider failover, capability-removal-by-default security, and an append-only tool audit log.",
+      "url": "https://github.com/deBilla/marsClaw"
+    },
+    {
+      "id": "5",
+      "title": "FleetOS",
+      "description": "17-service Go platform streaming 20-DOF robot telemetry over gRPC into Kafka, with a Temporal-orchestrated ML lifecycle running from experience collection through GPU training to canary rollout with automatic rollback.",
+      "url": "https://github.com/deBilla/robot-fleet"
     },
     {
       "id": "6",
-      "title": "Zylobin",
-      "description": "A platform for smart, efficient online solutions.",
-      "url": "https://zylobin.com"
+      "title": "kube-gpu",
+      "description": "kubectl plugin giving real-time visibility into NVIDIA MIG partitions — per-pod GPU-slice assignment, pending job queues, and CUDA/NCCL/OOM highlighting in streamed logs. Ships via Homebrew and krew.",
+      "url": "https://github.com/deBilla/kube-gpu"
     },
     {
       "id": "7",
-      "title": "Card Promotions",
-      "description": "Find the best credit card promotions and deals in one place.",
-      "url": "https://cardpromotions.org"
+      "title": "Kithly",
+      "description": "Consumer product built end-to-end and solo: a React Native app, a Go API on Clean Architecture, pre-signed S3 uploads, and a Redis/asynq worker pipeline that stitches contributor clips into one finished video.",
+      "url": "https://kithly.app"
+    },
+    {
+      "id": "8",
+      "title": "Zylobin",
+      "description": "Civic recycling platform built solo across four codebases — React Native app, admin console, marketing site and Node API — covering 1,500+ verified collection bins across a 15-module domain.",
+      "url": "https://zylobin.com"
     }
   ],
   "services": [
@@ -217,27 +192,77 @@
     "skills": [
       {
         "label": "AI & Agents",
-        "items": ["Model Context Protocol (MCP)", "LangGraph", "Claude Agent SDK", "Vertex AI", "Gemini", "RAG / vector search (FAISS, Qdrant)", "LLM agent guardrails", "Whisper STT / TTS"]
+        "items": [
+          "Model Context Protocol (MCP)",
+          "LangGraph",
+          "Claude Agent SDK",
+          "Vertex AI",
+          "Gemini",
+          "RAG / vector search (FAISS, Qdrant)",
+          "LLM agent guardrails",
+          "Whisper STT / TTS"
+        ]
       },
       {
         "label": "Languages",
-        "items": ["Python", "TypeScript / JavaScript", "Go", "Java"]
+        "items": [
+          "Python",
+          "TypeScript / JavaScript",
+          "Go",
+          "Java"
+        ]
       },
       {
         "label": "Platform & Cloud",
-        "items": ["GKE / Kubernetes", "Terraform", "Cloud Deploy / Skaffold", "Cloud Build", "GitHub Actions", "Workload Identity / OIDC", "Docker", "GCP (Cloud Run, Cloud Functions, VPC, Cloud VPN)", "AWS (ECS, Lambda, Kinesis, Cognito, RDS, S3, CloudFront)"]
+        "items": [
+          "GKE / Kubernetes",
+          "Terraform",
+          "Cloud Deploy / Skaffold",
+          "Cloud Build",
+          "GitHub Actions",
+          "Workload Identity / OIDC",
+          "Docker",
+          "GCP (Cloud Run, Cloud Functions, VPC, Cloud VPN)",
+          "AWS (ECS, Lambda, Kinesis, Cognito, RDS, S3, CloudFront)"
+        ]
       },
       {
         "label": "Data",
-        "items": ["BigQuery", "Pub/Sub", "Apache Beam / Dataflow", "Google Workflows", "PostgreSQL", "MongoDB", "Firestore", "Redis"]
+        "items": [
+          "BigQuery",
+          "Pub/Sub",
+          "Apache Beam / Dataflow",
+          "Google Workflows",
+          "PostgreSQL",
+          "MongoDB",
+          "Firestore",
+          "Redis"
+        ]
       },
       {
         "label": "Reliability & Security",
-        "items": ["Incident response & RCA", "OpenTelemetry", "Prometheus", "Grafana", "Cloud Logging / Monitoring", "OAuth 2.0 / OIDC / JWT", "HMAC / AES-256 request signing", "GDPR automation", "Secrets management (GCP Secret Manager, AWS Secrets Manager)"]
+        "items": [
+          "Incident response & RCA",
+          "OpenTelemetry",
+          "Prometheus",
+          "Grafana",
+          "Cloud Logging / Monitoring",
+          "OAuth 2.0 / OIDC / JWT",
+          "HMAC / AES-256 request signing",
+          "GDPR automation",
+          "Secrets management (GCP Secret Manager, AWS Secrets Manager)"
+        ]
       },
       {
         "label": "Frontend",
-        "items": ["React", "Next.js", "React Native / Expo", "Node.js / Express", "NestJS", "Spring Boot"]
+        "items": [
+          "React",
+          "Next.js",
+          "React Native / Expo",
+          "Node.js / Express",
+          "NestJS",
+          "Spring Boot"
+        ]
       }
     ],
     "education": {
