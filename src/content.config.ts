@@ -16,14 +16,14 @@ const blog = defineCollection({
     mediumUrl: z
       .string()
       .transform((v) => (v.trim() === "" ? undefined : v.trim()))
-      .pipe(z.string().url().optional())
+      .pipe(z.url().optional())
       .optional(),
     /** Optional override; otherwise reading time is computed from the body. */
     readTime: z.string().optional(),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
     /** Points elsewhere when this post was first published on another site. */
-    canonicalUrl: z.string().url().optional(),
+    canonicalUrl: z.url().optional(),
   }),
 });
 
