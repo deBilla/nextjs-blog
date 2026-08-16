@@ -28,46 +28,65 @@ const USER = "deBilla";
  * A GitHub outage must not break the build, so failures degrade to an empty
  * list and the section is simply omitted.
  */
-export async function getTopRepos(limit = 6): Promise<Repo[]> {
+const PER_PAGE = 100;
+const MAX_PAGES = 5;
+
+export async function getRepos(limit?: number): Promise<Repo[]> {
   const token = process.env.GITHUB_TOKEN;
+  const headers = {
+    Accept: "application/vnd.github+json",
+    "User-Agent": "billacode.org-build",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+
+  const collected: GitHubRepo[] = [];
 
   try {
-    const response = await fetch(
-      `https://api.github.com/users/${USER}/repos?per_page=100&sort=updated`,
-      {
-        headers: {
-          Accept: "application/vnd.github+json",
-          "User-Agent": "billacode.org-build",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      }
-    );
-
-    if (!response.ok) {
-      console.warn(
-        `[github] ${response.status} ${response.statusText} — skipping repo list.` +
-          (response.status === 403 ? " Rate limited; set GITHUB_TOKEN to raise the limit." : "")
+    // The account has more than one page of repos, so walk until a short page
+    // comes back. MAX_PAGES stops a pathological loop from stalling the build.
+    for (let page = 1; page <= MAX_PAGES; page++) {
+      const response = await fetch(
+        `https://api.github.com/users/${USER}/repos?per_page=${PER_PAGE}&sort=updated&page=${page}`,
+        { headers }
       );
-      return [];
+
+      if (!response.ok) {
+        console.warn(
+          `[github] ${response.status} ${response.statusText} on page ${page}.` +
+            (response.status === 403
+              ? " Rate limited; set GITHUB_TOKEN to raise the limit."
+              : "")
+        );
+        break;
+      }
+
+      const batch = (await response.json()) as GitHubRepo[];
+      collected.push(...batch);
+      if (batch.length < PER_PAGE) break;
     }
-
-    const repos = (await response.json()) as GitHubRepo[];
-
-    return repos
-      // A repo with no description renders as a bare name and language, which
-      // reads as unfinished on the home page.
-      .filter((repo) => !repo.fork && !repo.archived && repo.description?.trim())
-      .sort((a, b) => b.stargazers_count - a.stargazers_count)
-      .slice(0, limit)
-      .map((repo) => ({
-        name: repo.name,
-        description: repo.description,
-        url: repo.html_url,
-        stars: repo.stargazers_count,
-        language: repo.language,
-      }));
   } catch (error) {
-    console.warn("[github] fetch failed — skipping repo list:", error);
-    return [];
+    console.warn("[github] fetch failed:", error);
   }
+
+  if (collected.length === 0) return [];
+
+  const repos = collected
+    .filter((repo) => !repo.fork && !repo.archived)
+    .sort(
+      (a, b) =>
+        b.stargazers_count - a.stargazers_count ||
+        // Described repos ahead of bare ones at the same star count.
+        Number(Boolean(b.description?.trim())) - Number(Boolean(a.description?.trim())) ||
+        a.name.localeCompare(b.name)
+    )
+    .map((repo) => ({
+      name: repo.name,
+      description: repo.description,
+      url: repo.html_url,
+      stars: repo.stargazers_count,
+      language: repo.language,
+    }));
+
+  console.log(`[github] ${repos.length} repositories`);
+  return limit ? repos.slice(0, limit) : repos;
 }
