@@ -32,3 +32,6 @@ pnpm-debug.log*
 # Medium data export — contains login IPs, sessions, and profile data.
 # Source material only; never commit it.
 medium-export-*/
+
+# Private CV detail — the achievement bullets handed out on request only.
+src/data/resume-detail.json
