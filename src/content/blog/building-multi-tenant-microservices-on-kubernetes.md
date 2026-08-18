@@ -2,6 +2,7 @@
 title: "Building a Multi-Tenant E-Commerce Platform on Kubernetes with Linkerd, OpenTelemetry, and Helm"
 date: "2026-03-28"
 preview: "A hands-on guide to production-grade microservices with namespace-level tenant isolation, mTLS, observability, and a React dashboard — all running locally on kind."
+description: "Production-grade multi-tenant microservices on Kubernetes: namespace isolation, mTLS with Linkerd, OpenTelemetry, all running locally on kind."
 tags: ["kubernetes", "microservices", "observability"]
 ---
 

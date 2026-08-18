@@ -3,6 +3,7 @@ title: "Import-Aware CI/CD for Firebase Cloud Functions: Deploy Only What Change
 date: "2026-04-11"
 readTime: "10 min"
 preview: "If you have a monorepo with many Cloud Functions, setting up CI/CD can feel like something to avoid. In this guide I'll show a better approach: selective deployment using static import analysis, without any complex monorepo tooling like Bazel or Nx."
+description: "Deploy only the Firebase Cloud Functions a change actually touches, using static import analysis instead of Bazel or Nx in your monorepo."
 ---
 
 If you have a monorepo with many Cloud Functions, setting up CI/CD can feel like something to avoid — one wrong change and you're redeploying everything.

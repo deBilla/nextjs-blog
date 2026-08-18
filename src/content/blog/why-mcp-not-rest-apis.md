@@ -3,6 +3,7 @@ title: "Why MCP, Not REST APIs?"
 date: "2026-08-03"
 readTime: "10 min"
 preview: "The question comes up the moment you try to make an agent use your existing API. The answer isn't that REST is wrong — it's that REST was designed for a client who reads the docs at build time, and an LLM isn't that client."
+description: "REST assumes a client that read the docs at build time. An LLM isn't that client — why MCP fits agents better, and what it changes about tool design."
 ---
 
 The question showed up for me in a very specific way. We had a REST API that worked fine — versioned, documented, an OpenAPI spec that generated typed clients. Then someone asked whether an agent could use it, and the obvious move was to hand the model an HTTP tool and the spec and let it figure things out.

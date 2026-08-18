@@ -3,6 +3,7 @@ title: "From Raw Events to Per-User Intelligence: The Techniques Behind a Person
 date: "2026-07-06"
 readTime: "12 min"
 preview: "A field guide to the techniques that turn billions of behavioural events into per-user personas and forward-looking scores — identity resolution, RFM, quantile bucketing, time-share archetyping, temporal validation, leakage control, and transparent composite scoring."
+description: "Turning billions of behavioural events into user personas and propensity scores: identity resolution, RFM, quantile bucketing, and leakage control."
 ---
 
 Most consumer products sit on a mountain of behavioural data and almost no understanding of the individual people generating it. You have events — sessions, screen views, purchases, streaks — but a stakeholder doesn't want events. They want to know *who this person is*, *what they use the product for*, *whether they'll pay*, and *whether they're about to leave*.

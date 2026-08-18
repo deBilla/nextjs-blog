@@ -3,6 +3,7 @@ title: "Go vs NestJS: The Backend Decision You'll Thank Yourself For Later"
 date: "2026-04-25"
 readTime: "9 min"
 preview: "A practical comparison for engineers who've felt the growing pains of Node.js at scale — with real numbers, honest tradeoffs, and a story about a Cloud Function that forced the question."
+description: "Go or NestJS for your backend? Real numbers on memory and cold starts, honest tradeoffs, and the Cloud Function upgrade that forced the question."
 mediumUrl: ""
 ---
 
