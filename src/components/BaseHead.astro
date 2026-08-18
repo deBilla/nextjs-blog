@@ -8,8 +8,13 @@ interface Props {
   description?: string;
   /** Absolute or site-relative URL of the social card image. */
   image?: string;
+  /** Alt text for the social card, for screen readers on Slack/X previews. */
+  imageAlt?: string;
   type?: "website" | "article";
   publishedAt?: Date;
+  modifiedAt?: Date;
+  /** Article tags, emitted as `article:tag`. */
+  tags?: string[];
   /** Set when the canonical copy lives on another domain. */
   canonical?: string;
   noindex?: boolean;
@@ -19,8 +24,11 @@ const {
   title,
   description = SITE.description,
   image = "/og/default.png",
+  imageAlt,
   type = "website",
   publishedAt,
+  modifiedAt,
+  tags = [],
   canonical,
   noindex = false,
 } = Astro.props;
@@ -32,14 +40,21 @@ const cleanPath = Astro.url.pathname.replace(/(?:index)?\.html$/, "") || "/";
 const canonicalUrl = canonical ?? new URL(cleanPath, Astro.site).href.replace(/\/$/, "");
 const imageUrl = new URL(image, Astro.site).href;
 const fullTitle = title === SITE.title ? title : `${title} — ${SITE.name}`;
+
+// Let Google use a full-size thumbnail and an untruncated snippet; the default
+// caps both. `noindex, follow` still lets link equity flow out of the page.
+const robots = noindex
+  ? "noindex, follow"
+  : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
 ---
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
+<meta name="author" content={SITE.author} />
 <link rel="canonical" href={canonicalUrl} />
-{noindex && <meta name="robots" content="noindex, follow" />}
+<meta name="robots" content={robots} />
 
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="sitemap" href="/sitemap-index.xml" />
@@ -51,6 +66,7 @@ const fullTitle = title === SITE.title ? title : `${title} — ${SITE.name}`;
 />
 
 <meta property="og:site_name" content={SITE.name} />
+<meta property="og:locale" content="en_GB" />
 <meta property="og:type" content={type} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
@@ -58,12 +74,17 @@ const fullTitle = title === SITE.title ? title : `${title} — ${SITE.name}`;
 <meta property="og:image" content={imageUrl} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={imageAlt ?? title} />
 {publishedAt && <meta property="article:published_time" content={publishedAt.toISOString()} />}
+{modifiedAt && <meta property="article:modified_time" content={modifiedAt.toISOString()} />}
+{type === "article" && <meta property="article:author" content={SITE.author} />}
+{tags.map((tag) => <meta property="article:tag" content={tag} />)}
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content={imageAlt ?? title} />
 
 {/* Preload only the weights used above the fold; the rest load on demand. */}
 <Font cssVariable="--font-sans" preload={[{ weight: 400 }, { weight: 600 }]} />

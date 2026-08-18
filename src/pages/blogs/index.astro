@@ -1,10 +1,37 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PostList from "../../components/PostList.astro";
-import { getPosts, groupByYear } from "../../utils/posts";
+import { canonicalFor, getPosts, groupByYear } from "../../utils/posts";
+import { breadcrumbs, graph, person, website, PERSON_ID, SITE_ID } from "../../utils/schema";
+import { SITE } from "../../site";
 
 const posts = await getPosts();
 const years = groupByYear(posts);
+
+const schema = graph(
+  person,
+  website,
+  {
+    "@type": "Blog",
+    "@id": `${SITE.url}/blogs#blog`,
+    url: `${SITE.url}/blogs`,
+    name: `${SITE.author} — Writing`,
+    description:
+      "Articles on distributed systems, platform engineering, and AI infrastructure.",
+    inLanguage: "en",
+    author: { "@id": PERSON_ID },
+    publisher: { "@id": PERSON_ID },
+    isPartOf: { "@id": SITE_ID },
+    blogPost: posts.map((post) => ({
+      "@type": "BlogPosting",
+      "@id": `${canonicalFor(post, SITE.url)}#article`,
+      headline: post.data.title,
+      url: canonicalFor(post, SITE.url),
+      datePublished: post.data.date.toISOString(),
+    })),
+  },
+  breadcrumbs([["Home", "/"], ["Writing", "/blogs"]])
+);
 ---
 
 <BaseLayout
@@ -27,6 +54,8 @@ const years = groupByYear(posts);
       </section>
     ))
   }
+
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 </BaseLayout>
 
 <style>

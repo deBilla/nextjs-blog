@@ -1,67 +1,30 @@
 ---
-import portfolio from "../data/portfolio.json";
 import { SITE } from "../site";
 
 const year = new Date().getFullYear();
-const socials = portfolio.socials.filter((s) => s.title !== "Blog");
 ---
 
 <footer class="site-footer">
-  <div class="wrap inner">
-    <p class="colophon">
-      © {year} {SITE.author}. Built with Astro, served from Cloudflare.
-    </p>
-    <ul class="links">
-      {
-        socials.map((social) => (
-          <li>
-            <a href={social.link} rel="me noopener noreferrer">
-              {social.title}
-            </a>
-          </li>
-        ))
-      }
-      <li><a href="/rss.xml">RSS</a></li>
-    </ul>
-  </div>
+  <p class="colophon">
+    © {year} {SITE.author}. Built with Astro, served from Cloudflare.
+  </p>
 </footer>
 
 <style>
   .site-footer {
-    margin-top: 6rem;
-    border-top: 1px solid var(--border);
+    margin-inline: var(--gutter);
     padding-block: 2rem 3rem;
+    border-top: 1px solid var(--border);
   }
 
-  .inner {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem 1.5rem;
-    align-items: baseline;
-    justify-content: space-between;
+  @media (min-width: 64rem) {
+    .site-footer {
+      margin-inline: 0;
+    }
   }
 
   .colophon {
     font-size: var(--step--1);
     color: var(--ink-faint);
-  }
-
-  .links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.1rem;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    font-size: var(--step--1);
-  }
-
-  .links a {
-    color: var(--ink-muted);
-    text-decoration: none;
-  }
-
-  .links a:hover {
-    color: var(--accent);
   }
 </style>

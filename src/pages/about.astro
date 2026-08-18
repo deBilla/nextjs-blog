@@ -1,8 +1,25 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import portfolio from "../data/portfolio.json";
+import { breadcrumbs, graph, person, website, PERSON_ID, SITE_ID } from "../utils/schema";
+import { SITE } from "../site";
 
 const socials = portfolio.socials.filter((s) => s.title !== "Blog");
+
+const schema = graph(
+  person,
+  website,
+  {
+    "@type": "AboutPage",
+    "@id": `${SITE.url}/about`,
+    url: `${SITE.url}/about`,
+    name: `About ${SITE.author}`,
+    inLanguage: "en",
+    isPartOf: { "@id": SITE_ID },
+    mainEntity: { "@id": PERSON_ID },
+  },
+  breadcrumbs([["Home", "/"], ["About", "/about"]])
+);
 ---
 
 <BaseLayout
@@ -54,6 +71,7 @@ const socials = portfolio.socials.filter((s) => s.title !== "Blog");
       </p>
     </section>
   </div>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 </BaseLayout>
 
 <style>

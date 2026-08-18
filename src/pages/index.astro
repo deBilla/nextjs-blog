@@ -5,36 +5,29 @@ import portfolio from "../data/portfolio.json";
 import { getPosts } from "../utils/posts";
 import { getRepos } from "../utils/github";
 import RepoScroller from "../components/RepoScroller.astro";
+import { graph, person, website } from "../utils/schema";
 import { SITE } from "../site";
 
 const posts = await getPosts();
 const recent = posts.slice(0, 6);
 const featured = portfolio.apps;
 const repos = await getRepos();
+
+const schema = graph(person, website);
 ---
 
 <BaseLayout title={SITE.title} description={SITE.description}>
   <section class="intro">
-    <h1>Dimuthu Wickramanayake</h1>
+    <h1>I build AI platform and agent infrastructure.</h1>
     <p class="tagline">
-      I build AI platform and agent infrastructure — MCP servers, LLM assistants, and the
-      Kubernetes and data platforms underneath them — and write about what the tradeoffs
-      actually cost.
-    </p>
-    <p class="links">
-      <a href="/about">About</a>
-      <span aria-hidden="true">·</span>
-      <a href="/cv">CV</a>
-      <span aria-hidden="true">·</span>
-      <a href={portfolio.socials.find((s) => s.title === "Github")?.link}>GitHub</a>
-      <span aria-hidden="true">·</span>
-      <a href={portfolio.socials.find((s) => s.title === "LinkedIn")?.link}>LinkedIn</a>
+      MCP servers, LLM assistants, and the Kubernetes and data platforms underneath them
+      — and writing about what the tradeoffs actually cost.
     </p>
   </section>
 
   <section class="section">
     <div class="section-head">
-      <h2>Writing</h2>
+      <h2>Recent writing</h2>
       <a class="more" href="/blogs">All {posts.length} posts →</a>
     </div>
     <PostList posts={recent} />
@@ -69,37 +62,26 @@ const repos = await getRepos();
       </section>
     )
   }
+
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 </BaseLayout>
 
 <style>
   .intro {
-    max-width: var(--measure);
+    max-width: 30rem;
+  }
+
+  .intro h1 {
+    font-size: var(--step-3);
+    letter-spacing: -0.025em;
   }
 
   .tagline {
-    margin-top: 1.1rem;
+    margin-top: 1rem;
     font-family: var(--font-prose);
-    font-size: var(--step-2);
-    line-height: 1.5;
+    font-size: var(--step-1);
+    line-height: 1.6;
     color: var(--ink-muted);
-  }
-
-  .links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-top: 1.5rem;
-    font-size: var(--step--1);
-    color: var(--ink-faint);
-  }
-
-  .links a {
-    color: var(--ink-muted);
-    text-decoration: none;
-  }
-
-  .links a:hover {
-    color: var(--accent);
   }
 
   .section {

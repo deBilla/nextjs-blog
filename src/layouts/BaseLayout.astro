@@ -1,6 +1,6 @@
 ---
 import BaseHead from "../components/BaseHead.astro";
-import Header from "../components/Header.astro";
+import Sidebar from "../components/Sidebar.astro";
 import Footer from "../components/Footer.astro";
 import { SITE } from "../site";
 
@@ -8,11 +8,14 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
+  imageAlt?: string;
   type?: "website" | "article";
   publishedAt?: Date;
+  modifiedAt?: Date;
+  tags?: string[];
   canonical?: string;
   noindex?: boolean;
-  /** Widen the content column (used by the CV). */
+  /** Widen the content column (used by the CV and by post pages). */
   wide?: boolean;
 }
 
@@ -26,16 +29,64 @@ const { wide = false, ...head } = Astro.props;
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
-    <Header />
-    <main id="main" class:list={["wrap", { "wrap-wide": wide }]}>
-      <slot />
-    </main>
-    <Footer />
+
+    <div class:list={["shell", { "shell-wide": wide }]}>
+      <Sidebar />
+
+      <div class="column">
+        <main id="main" class:list={["content", { "content-wide": wide }]}>
+          <slot />
+        </main>
+        <Footer />
+      </div>
+    </div>
   </body>
 </html>
 
 <style>
-  main {
-    padding-top: clamp(2.5rem, 1.8rem + 3vw, 4.5rem);
+  .column {
+    /* Keeps the footer at the bottom on pages too short to fill the viewport. */
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    min-width: 0;
+  }
+
+  /* The gutter padding sits here rather than on the shell so that bleeding
+     children (code blocks, the repo scroller, wide tables) have something to
+     bleed into instead of overflowing the page. The measure is preserved by
+     adding the gutters on top of it. */
+  .content {
+    flex: 1;
+    width: 100%;
+    max-width: calc(var(--page) + var(--gutter) * 2);
+    padding: 2.5rem var(--gutter) 4rem;
+    /* The repo scroller is a horizontal scroll container that bleeds out to
+       exactly this element's border box. Its own `overflow-x` does not stop it
+       contributing to the page's scroll width, so the bleed is clipped here
+       instead — at the edge it bleeds to, leaving the effect intact. `clip`
+       rather than `hidden` so the sticky table-of-contents still works. */
+    overflow-x: clip;
+  }
+
+  .content-wide {
+    max-width: calc(var(--page-wide) + var(--gutter) * 2);
+  }
+
+  @media (min-width: 64rem) {
+    .content {
+      padding-block: 3.5rem 5rem;
+    }
+  }
+
+  @media print {
+    .column {
+      min-height: 0;
+    }
+
+    .content {
+      max-width: none;
+      padding: 0;
+    }
   }
 </style>

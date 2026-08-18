@@ -2,7 +2,18 @@
 import type { MarkdownHeading } from "astro";
 import BaseLayout from "./BaseLayout.astro";
 import TableOfContents from "../components/TableOfContents.astro";
-import { formatDate, isoDate, isSyndicatedStub, readingTime, type Post } from "../utils/posts";
+import {
+  canonicalFor,
+  countWords,
+  formatDate,
+  isoDate,
+  isSyndicatedStub,
+  metaDescription,
+  modifiedDate,
+  readingTime,
+  type Post,
+} from "../utils/posts";
+import { breadcrumbs, graph, person, website, PERSON_ID } from "../utils/schema";
 import { SITE } from "../site";
 
 interface Props {
@@ -13,32 +24,59 @@ interface Props {
 }
 
 const { post, headings, prev, next } = Astro.props;
-const { title, date, preview, mediumUrl, canonicalUrl } = post.data;
+const { title, date, preview, mediumUrl, tags } = post.data;
 const stub = isSyndicatedStub(post);
+const description = metaDescription(post);
+const modified = modifiedDate(post);
 
 // A summary of a piece that lives on Medium should point search engines there,
 // not compete with it. Full posts stay canonical here.
-const canonical = canonicalUrl ?? (stub && mediumUrl ? mediumUrl : undefined);
+const canonical = canonicalFor(post, SITE.url);
+const ownUrl = new URL(`/blogs/${post.id}`, SITE.url).href;
+const isCanonicalHere = canonical === ownUrl;
 
-const schema = {
-  "@context": "https://schema.org",
+// Anchor the article to whichever URL is canonical, so the structured data
+// never contradicts the <link rel="canonical"> above it.
+const article = {
   "@type": "BlogPosting",
-  headline: title,
-  description: preview,
+  "@id": `${canonical}#article`,
+  headline: title.slice(0, 110),
+  name: title,
+  description,
   datePublished: date.toISOString(),
-  author: { "@type": "Person", name: SITE.author, url: SITE.url },
-  mainEntityOfPage: new URL(`/blogs/${post.id}`, SITE.url).href,
+  dateModified: modified.toISOString(),
+  author: { "@id": PERSON_ID },
+  publisher: { "@id": PERSON_ID },
+  mainEntityOfPage: canonical,
+  url: canonical,
   image: new URL(`/og/${post.id}.png`, SITE.url).href,
+  inLanguage: "en",
+  wordCount: countWords(post.body ?? ""),
+  isPartOf: { "@id": website["@id"] },
+  ...(tags.length > 0 && { keywords: tags.join(", ") }),
 };
+
+// Breadcrumbs only make sense for pages that are canonically ours.
+const schema = graph(
+  person,
+  website,
+  article,
+  ...(isCanonicalHere
+    ? [breadcrumbs([["Home", "/"], ["Writing", "/blogs"], [title, `/blogs/${post.id}`]])]
+    : [])
+);
 ---
 
 <BaseLayout
   title={title}
-  description={preview}
+  description={description}
   image={`/og/${post.id}.png`}
+  imageAlt={`${title} — ${SITE.name}`}
   type="article"
   publishedAt={date}
-  canonical={canonical}
+  modifiedAt={modified}
+  tags={tags}
+  canonical={isCanonicalHere ? undefined : canonical}
   wide
 >
   <div class="progress no-print" aria-hidden="true"><span id="progress-bar"></span></div>
@@ -168,8 +206,10 @@ const schema = {
     display: none;
   }
 
-  /* Only promote the TOC to a sidebar when there is genuinely room for it. */
-  @media (min-width: 1180px) {
+  /* Only promote the TOC to a rail when there is genuinely room for it. The
+     identity sidebar already takes 15rem, so this needs a wider viewport than
+     the single-column layout did. */
+  @media (min-width: 87.5rem) {
     .post-grid {
       grid-template-columns: minmax(0, 44rem) 13rem;
       column-gap: 4rem;

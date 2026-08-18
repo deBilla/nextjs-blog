@@ -1,8 +1,11 @@
 import { getCollection, type CollectionEntry } from "astro:content";
+import { countWords, isStubBody } from "./syndication";
 
 export type Post = CollectionEntry<"blog">;
 
 const WORDS_PER_MINUTE = 220;
+
+export { countWords };
 
 /**
  * Posts that only summarise an article published elsewhere. They are shown
@@ -10,16 +13,35 @@ const WORDS_PER_MINUTE = 220;
  * canonical copy.
  */
 export function isSyndicatedStub(post: Post): boolean {
-  if (!post.data.mediumUrl) return false;
-  return countWords(post.body ?? "") < 400;
+  if (post.data.syndicated !== undefined) return post.data.syndicated;
+  return isStubBody(post.body ?? "", post.data.mediumUrl);
 }
 
-export function countWords(body: string): number {
-  return body.split(/\s+/).filter(Boolean).length;
+/**
+ * The URL search engines should treat as canonical for a post: an explicit
+ * override, else Medium when this page is only a summary, else our own page.
+ */
+export function canonicalFor(post: Post, siteUrl: string): string {
+  if (post.data.canonicalUrl) return post.data.canonicalUrl;
+  if (isSyndicatedStub(post) && post.data.mediumUrl) return post.data.mediumUrl;
+  return new URL(`/blogs/${post.id}`, siteUrl).href;
+}
+
+/** Meta description: the hand-written override when set, else the on-page lede. */
+export function metaDescription(post: Post): string {
+  return post.data.description ?? post.data.preview;
+}
+
+/** The date to advertise as last modified. */
+export function modifiedDate(post: Post): Date {
+  return post.data.updated ?? post.data.date;
 }
 
 export function readingTime(post: Post): string {
-  if (post.data.readTime) return post.data.readTime;
+  // Hand-set values are written as "10 min"; computed ones read "10 min read".
+  // Normalise so a listing never mixes the two forms.
+  const override = post.data.readTime?.trim();
+  if (override) return /read$/i.test(override) ? override : `${override} read`;
   const minutes = Math.max(1, Math.round(countWords(post.body ?? "") / WORDS_PER_MINUTE));
   return `${minutes} min read`;
 }

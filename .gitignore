@@ -28,3 +28,7 @@ pnpm-debug.log*
 
 # cloudflare
 .wrangler/
+
+# Medium data export — contains login IPs, sessions, and profile data.
+# Source material only; never commit it.
+medium-export-*/
