@@ -4,7 +4,7 @@ import { renderOgImage } from "../../utils/og";
 export const GET: APIRoute = async () => {
   const png = await renderOgImage({
     title: "Distributed systems, platform engineering, and AI infrastructure.",
-    meta: "billacode.org",
+    meta: "billacode.com",
   });
 
   return new Response(new Uint8Array(png), {

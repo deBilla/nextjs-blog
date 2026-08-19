@@ -131,7 +131,7 @@ export async function renderOgImage({ title, meta, eyebrow }: OgCard): Promise<B
         },
         [
           h("div", { style: { display: "flex" } }, SITE.author),
-          h("div", { style: { display: "flex" } }, meta ?? "billacode.org"),
+          h("div", { style: { display: "flex" } }, meta ?? "billacode.com"),
         ]
       ),
     ]

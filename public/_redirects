@@ -1,3 +1,13 @@
+# billacode.org is now a redirect, not a site. Every old URL keeps working and
+# passes its ranking signals to the .com — which is why the .org registration
+# stays renewed rather than being allowed to lapse. Host-qualified sources, so
+# these only fire for the old domain and never loop on the new one.
+https://billacode.org/*      https://billacode.com/:splat  301
+https://www.billacode.org/*  https://billacode.com/:splat  301
+
+# One canonical host on the new domain too.
+https://www.billacode.com/*  https://billacode.com/:splat  301
+
 # Legacy routes from the Next.js site. The /blogs/<slug> URLs are unchanged,
 # so only the aliases below need forwarding.
 /blog                /blogs        301

@@ -35,7 +35,7 @@ export async function getRepos(limit?: number): Promise<Repo[]> {
   const token = process.env.GITHUB_TOKEN;
   const headers = {
     Accept: "application/vnd.github+json",
-    "User-Agent": "billacode.org-build",
+    "User-Agent": "billacode.com-build",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 

@@ -54,7 +54,7 @@ const schema = graph(
             </li>
           ))
         }
-        <li><a href={SITE.url}>billacode.org</a></li>
+        <li><a href={SITE.url}>{SITE.url.replace(/^https?:\/\//, "")}</a></li>
       </ul>
     </header>
 

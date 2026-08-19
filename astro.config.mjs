@@ -5,7 +5,7 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import { isStubBody } from "./src/utils/syndication.ts";
 
-const SITE = "https://billacode.org";
+const SITE = "https://billacode.com";
 const BLOG_DIR = new URL("./src/content/blog/", import.meta.url);
 
 /**

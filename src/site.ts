@@ -1,7 +1,7 @@
 export const SITE = {
   name: "billacode",
   author: "Dimuthu Wickramanayake",
-  url: "https://billacode.org",
+  url: "https://billacode.com",
   /** Home page <title>. Names the person and what they do, for search results. */
   title: "Dimuthu Wickramanayake — AI Platform & Agent Infrastructure Engineer",
   description:
