@@ -81,7 +81,22 @@ const { compact = false } = Astro.props;
     // to the résumé rather than having CV passages read out in a search widget —
     // the summary lives on one page by design, and the detail is only handed
     // over on request.
-    const profileCard = `
+    //
+    // On the résumé itself, "see the resume" would be pointing at the page the
+    // reader is already on, so the same question routes to the request form.
+    const onResume = location.pathname.replace(/\/$/, "") === "/resume";
+
+    const profileCard = onResume
+      ? `
+      <article class="hit profile">
+        <p class="source">About my work</p>
+        <p class="answer">
+          The summary is on this page — roles, scope and stack. The detailed project
+          work and outcomes for each role are available on request.
+        </p>
+        <a href="#request-heading">Ask for the full CV →</a>
+      </article>`
+      : `
       <article class="hit profile">
         <p class="source">About my work</p>
         <p class="answer">

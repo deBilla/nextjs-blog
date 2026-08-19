@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import portfolio from "../data/portfolio.json";
 import { breadcrumbs, graph, person, website, PERSON_ID, SITE_ID } from "../utils/schema";
 import { bulletsFor, hasDetail } from "../utils/resume-detail";
+import AskArchive from "../components/AskArchive.astro";
 import { SITE } from "../site";
 
 const { resume, socials } = portfolio;
@@ -167,6 +168,8 @@ const schema = graph(
       </div>
       <p class="uni">{resume.education.universityName}</p>
     </section>
+
+    <AskArchive compact />
   </div>
   <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 </BaseLayout>
