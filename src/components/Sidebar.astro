@@ -1,6 +1,8 @@
 ---
+import { Image } from "astro:assets";
 import { NAV, SITE } from "../site";
 import portfolio from "../data/portfolio.json";
+import profile from "../assets/profile.png";
 import ThemeToggle from "./ThemeToggle.astro";
 
 const path = Astro.url.pathname.replace(/\.html$/, "");
@@ -16,6 +18,16 @@ const socials = portfolio.socials
 
 <aside class="sidebar">
   <div class="identity">
+    <!-- Already cropped square and masked to a circle by scripts/profile-avatar.py,
+         so this only needs sizing. border-radius keeps the border on the circle. -->
+    <Image
+      class="portrait"
+      src={profile}
+      alt={SITE.author}
+      width={176}
+      densities={[1, 2]}
+      loading="eager"
+    />
     <a href="/" class="name">
       <span class="mark" aria-hidden="true"></span>
       {SITE.author}
@@ -62,6 +74,16 @@ const socials = portfolio.socials
   }
 
   /* --- Identity --------------------------------------------------------- */
+
+  .portrait {
+    display: block;
+    width: 5.5rem;
+    height: 5.5rem;
+    margin-bottom: 1.1rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border);
+  }
 
   .name {
     display: inline-flex;
@@ -166,6 +188,11 @@ const socials = portfolio.socials
       gap: 2.25rem;
       /* Scrollbar only when the sidebar genuinely overflows a short viewport. */
       scrollbar-width: thin;
+    }
+
+    .portrait {
+      width: 6.5rem;
+      height: 6.5rem;
     }
 
     .name {
