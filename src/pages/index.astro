@@ -5,6 +5,7 @@ import portfolio from "../data/portfolio.json";
 import { getPosts } from "../utils/posts";
 import { getRepos } from "../utils/github";
 import RepoScroller from "../components/RepoScroller.astro";
+import AskArchive from "../components/AskArchive.astro";
 import { graph, person, website } from "../utils/schema";
 import { SITE } from "../site";
 
@@ -24,6 +25,8 @@ const schema = graph(person, website);
       — and writing about what the tradeoffs actually cost.
     </p>
   </section>
+
+  <AskArchive />
 
   <section class="section">
     <div class="section-head">
