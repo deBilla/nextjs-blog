@@ -38,7 +38,7 @@ interface Env {
 }
 
 const TO = "dimuthu.billa@gmail.com";
-const FROM = "billacode <cv@billacode.org>";
+const FROM = "billacode <cv@billacode.com>";
 
 /** Trim, cap, and strip control characters before anything is echoed into email. */
 function clean(value: unknown, max: number): string {
