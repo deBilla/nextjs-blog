@@ -7,6 +7,8 @@
  * verbatim, with a link to its source. Framing it as a chat window would set an
  * expectation of prose that a retrieval engine cannot meet.
  */
+import { getIndexVersion } from "../utils/search-corpus";
+
 interface Props {
   /** Trimmed-down presentation for the foot of a post, where it is a follow-up
    * rather than the reason you came to the page. */
@@ -14,9 +16,17 @@ interface Props {
 }
 
 const { compact = false } = Astro.props;
+
+// Content hash of the passages. Fetching with it means a new post is available
+// the moment it deploys, while an unchanged index stays cached indefinitely.
+const indexUrl = `/search-index.json?v=${await getIndexVersion()}`;
 ---
 
-<section class:list={["ask", "no-print", { compact }]} aria-label="Ask the archive">
+<section
+  class:list={["ask", "no-print", { compact }]}
+  aria-label="Ask the archive"
+  data-index={indexUrl}
+>
   <h2>Ask the archive</h2>
   <p class="lede">
     {
@@ -50,6 +60,7 @@ const { compact = false } = Astro.props;
   let loading: Promise<void> | null = null;
 
   for (const root of document.querySelectorAll<HTMLElement>(".ask")) {
+    const indexUrl = root.dataset.index ?? "/search-index.json";
     const input = root.querySelector("input") as HTMLInputElement;
     const results = root.querySelector(".results") as HTMLDivElement;
     const status = root.querySelector(".status") as HTMLParagraphElement;
@@ -58,7 +69,7 @@ const { compact = false } = Astro.props;
     const load = () => {
       if (loading) return loading;
       status.textContent = "Loading the archive…";
-      loading = fetch("/search-index.json")
+      loading = fetch(indexUrl)
         .then((res) => {
           if (!res.ok) throw new Error(String(res.status));
           return res.json() as Promise<{ chunks: Chunk[] }>;
