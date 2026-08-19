@@ -41,7 +41,7 @@ const { compact = false } = Astro.props;
 </section>
 
 <script>
-  import { buildRuntime, highlight, search, type Runtime } from "../utils/search-runtime";
+  import { buildRuntime, hasProfileIntent, highlight, search, type Runtime } from "../utils/search-runtime";
   import type { Chunk } from "../utils/search-index";
 
   // Module scope, so two instances on one page share a single fetch and a
@@ -77,10 +77,29 @@ const { compact = false } = Astro.props;
     const escapeAttr = (s: string) =>
       s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 
+    // A card, not a quote. Questions about his work get acknowledged and routed
+    // to the résumé rather than having CV passages read out in a search widget —
+    // the summary lives on one page by design, and the detail is only handed
+    // over on request.
+    const profileCard = `
+      <article class="hit profile">
+        <p class="source">About my work</p>
+        <p class="answer">
+          Questions about my experience are answered on the resume page — roles, scope
+          and stack are there, and the detailed project work is available on request.
+        </p>
+        <a href="/resume">See the resume →</a>
+      </article>`;
+
     const render = (query: string) => {
       if (!runtime) return;
 
-      const hits = search(query, runtime);
+      // Ask for more than we show: the résumé hits are consumed as a signal
+      // rather than rendered, so they must not eat the visible slots.
+      const hits = search(query, runtime, 6);
+      const isProfile = hasProfileIntent(query);
+      const shown = hits.filter((h) => h.chunk.k !== "resume").slice(0, 3);
+
       if (!hits.length) {
         results.innerHTML = "";
         status.textContent = `Nothing in the archive matches "${query}".`;
@@ -88,7 +107,7 @@ const { compact = false } = Astro.props;
       }
 
       status.textContent = "";
-      results.innerHTML = hits
+      results.innerHTML = (isProfile ? profileCard : "") + shown
         .map(({ chunk, matched }) => {
           const meta = [chunk.d, chunk.w].filter(Boolean).join(" · ");
           const heading = chunk.h ? `<span class="heading">${escapeAttr(chunk.h)}</span>` : "";
@@ -236,5 +255,13 @@ const { compact = false } = Astro.props;
     display: inline-block;
     margin-top: 0.5rem;
     font-size: var(--step--1);
+  }
+
+  /* The referral card answers rather than quotes, so it reads as a statement
+     instead of an excerpt. */
+  .results :global(.profile .answer) {
+    margin-top: 0.35rem;
+    max-width: var(--measure);
+    color: var(--ink);
   }
 </style>

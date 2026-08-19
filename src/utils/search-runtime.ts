@@ -77,11 +77,23 @@ const PROFILE_BOOST = 3;
 /** How many CV passages are guaranteed a place when the question is about him. */
 const PROFILE_SLOTS = 2;
 
+/**
+ * True when the question is about him rather than about a topic.
+ *
+ * Callers use this to decide whether to answer with the résumé referral. It has
+ * to be intent-driven: "kafka saga pattern" pulls in a CV project that mentions
+ * Kafka, and answering that with "see my resume" would be a non-sequitur.
+ */
+export function hasProfileIntent(query: string): boolean {
+  return tokenize(query).some((t) => PROFILE_INTENT.has(t));
+}
+
 export function search(query: string, rt: Runtime, limit = 4): Result[] {
   const terms = [...new Set(tokenize(query))];
   if (!terms.length) return [];
 
   const wantsProfile = terms.some((t) => PROFILE_INTENT.has(t));
+
   const scores = new Map<number, number>();
   const matched = new Map<number, Set<string>>();
   const N = rt.chunks.length;
@@ -116,14 +128,25 @@ export function search(query: string, rt: Runtime, limit = 4): Result[] {
     }))
     .sort((a, b) => b.score - a.score);
 
-  if (!wantsProfile) return ranked.slice(0, limit);
+  // One passage per document. Three excerpts from the same post are one
+  // answer wearing three hats; a reader wants the best passage from each of
+  // several sources.
+  const seen = new Set<string>();
+  const diverse = ranked.filter((r) => {
+    const key = r.chunk.k === "resume" ? `resume:${r.chunk.h}` : r.chunk.d;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  if (!wantsProfile) return diverse.slice(0, limit);
 
   // "where does he work now" matches only the word "work", which 800 posts also
   // use — no amount of boosting reliably wins that on term statistics alone. So
   // for questions about him, the best CV passages take the first slots outright
   // and the writing fills the rest. Predictable beats clever here.
-  const cv = ranked.filter((r) => r.chunk.k === "resume").slice(0, PROFILE_SLOTS);
-  const rest = ranked.filter((r) => r.chunk.k !== "resume");
+  const cv = diverse.filter((r) => r.chunk.k === "resume").slice(0, PROFILE_SLOTS);
+  const rest = diverse.filter((r) => r.chunk.k !== "resume");
   return [...cv, ...rest].slice(0, limit);
 }
 
