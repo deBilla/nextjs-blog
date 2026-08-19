@@ -1,0 +1,221 @@
+---
+/**
+ * "Ask the archive" — retrieval over every post plus the public résumé summary.
+ *
+ * Deliberately not a chatbot. There is no model here, so nothing can synthesise
+ * an answer; what it returns is the passage that answers the question, quoted
+ * verbatim, with a link to its source. Framing it as a chat window would set an
+ * expectation of prose that a retrieval engine cannot meet.
+ */
+---
+
+<section class="ask" aria-labelledby="ask-heading">
+  <h2 id="ask-heading">Ask the archive</h2>
+  <p class="lede">
+    Ask a question and get the passage that answers it, quoted from the post it came
+    from. Runs entirely in your browser — nothing you type leaves this page.
+  </p>
+
+  <label class="field">
+    <span class="sr-only">Search the archive</span>
+    <input
+      type="search"
+      id="ask-input"
+      placeholder="why did disabling the cache break the database?"
+      autocomplete="off"
+      spellcheck="false"
+      aria-describedby="ask-status"
+    />
+  </label>
+
+  <p class="status" id="ask-status" role="status" aria-live="polite"></p>
+  <div class="results" id="ask-results"></div>
+</section>
+
+<script>
+  import { buildRuntime, highlight, search, type Runtime } from "../utils/search-runtime";
+  import type { Chunk } from "../utils/search-index";
+
+  const input = document.getElementById("ask-input") as HTMLInputElement | null;
+  const results = document.getElementById("ask-results") as HTMLDivElement | null;
+  const status = document.getElementById("ask-status") as HTMLParagraphElement | null;
+
+  if (input && results && status) {
+    let runtime: Runtime | null = null;
+    let loading: Promise<void> | null = null;
+
+    /** Fetch and index on first use — never on page load. */
+    const load = () => {
+      if (loading) return loading;
+      status.textContent = "Loading the archive…";
+      loading = fetch("/search-index.json")
+        .then((res) => {
+          if (!res.ok) throw new Error(String(res.status));
+          return res.json() as Promise<{ chunks: Chunk[] }>;
+        })
+        .then((data) => {
+          runtime = buildRuntime(data.chunks);
+          status.textContent = "";
+        })
+        .catch(() => {
+          status.textContent = "Couldn't load the archive. Try the post list below.";
+          loading = null;
+        });
+      return loading;
+    };
+
+    const escapeAttr = (s: string) =>
+      s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+
+    const render = (query: string) => {
+      if (!runtime) return;
+
+      const hits = search(query, runtime);
+      if (!hits.length) {
+        results.innerHTML = "";
+        status.textContent = `Nothing in the archive matches "${query}".`;
+        return;
+      }
+
+      status.textContent = "";
+      results.innerHTML = hits
+        .map(({ chunk, matched }) => {
+          const meta = [chunk.d, chunk.w].filter(Boolean).join(" · ");
+          const heading = chunk.h ? `<span class="heading">${escapeAttr(chunk.h)}</span>` : "";
+          return `
+            <article class="hit">
+              <p class="source">${escapeAttr(meta)}</p>
+              ${heading}
+              <blockquote>${highlight(chunk.t, matched)}</blockquote>
+              <a href="${escapeAttr(chunk.u)}">Read it in context →</a>
+            </article>`;
+        })
+        .join("");
+    };
+
+    let timer: ReturnType<typeof setTimeout>;
+    const onInput = async () => {
+      const query = input.value.trim();
+      clearTimeout(timer);
+
+      if (query.length < 3) {
+        results.innerHTML = "";
+        status.textContent = "";
+        return;
+      }
+
+      // Short debounce: scoring is sub-millisecond, so this is about not
+      // re-rendering on every keystroke rather than about cost.
+      timer = setTimeout(async () => {
+        await load();
+        render(query);
+      }, 120);
+    };
+
+    input.addEventListener("input", onInput);
+    // Warm the index while the first question is still being typed.
+    input.addEventListener("focus", load, { once: true });
+  }
+</script>
+
+<style>
+  .ask {
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-subtle);
+  }
+
+  .ask h2 {
+    font-size: var(--step-1);
+  }
+
+  .lede {
+    margin-top: 0.4rem;
+    max-width: var(--measure);
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+  }
+
+  .field {
+    display: block;
+    margin-top: 1rem;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    font: inherit;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .status {
+    margin-top: 0.6rem;
+    font-size: var(--step--1);
+    color: var(--ink-muted);
+    min-height: 1.2em;
+  }
+
+  .results {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .results:not(:empty) {
+    margin-top: 0.4rem;
+  }
+
+  .hit {
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .source {
+    font-size: var(--step--1);
+    color: var(--ink-faint);
+  }
+
+  .heading {
+    display: block;
+    margin-top: 0.15rem;
+    font-weight: 600;
+    font-size: var(--step--1);
+  }
+
+  blockquote {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-prose);
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  /* The whole point of the feature: the words you asked for, in the answer. */
+  blockquote :global(mark) {
+    background: color-mix(in oklch, var(--accent) 22%, transparent);
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 0.1em;
+  }
+
+  .hit a {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: var(--step--1);
+  }
+</style>
