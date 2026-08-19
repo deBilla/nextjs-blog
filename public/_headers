@@ -9,6 +9,11 @@
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Requested as /search-index.json?v=<content hash>, so a change of content is a
+# change of URL. The file itself never needs revalidating.
+/search-index.json
+  Cache-Control: public, max-age=31536000, immutable
+
 # Social cards change only when a post's title or date changes.
 /og/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
