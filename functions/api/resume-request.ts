@@ -6,7 +6,8 @@
  * it without a new exception. The alternative — a third-party form service —
  * would need both, and would put every request through someone else's database.
  *
- * Delivery goes through Resend. Set the secret once:
+ * Delivery tries Resend first, then a Telegram message via the marsClaw bot.
+ * Set whichever you prefer as a Pages secret:
  *   npx wrangler pages secret put RESEND_API_KEY --project-name=billacode
  *
  * Until that exists the endpoint fails cleanly with 503 and the page falls back
@@ -31,6 +32,9 @@ interface Env {
   RESUME_REQUEST_TO?: string;
   /** Verified sender domain in Resend. Defaults to Resend's shared sender. */
   RESUME_REQUEST_FROM?: string;
+  /** Telegram fallback: the marsClaw bot token and the chat to notify. */
+  TELEGRAM_BOT_TOKEN?: string;
+  TELEGRAM_CHAT_ID?: string;
 }
 
 const TO = "dimuthu.billa@gmail.com";
@@ -73,9 +77,6 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     return json({ error: "A name and a valid email address are required." }, 422);
   }
 
-  const key = env.RESEND_API_KEY;
-  if (!key) return json({ error: "Mail delivery is not configured." }, 503);
-
   const lines = [
     `Name:    ${name}`,
     `Email:   ${email}`,
@@ -84,27 +85,58 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     message || "(no message)",
   ].filter((line) => line !== null);
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: env.RESUME_REQUEST_FROM ?? FROM,
-      to: env.RESUME_REQUEST_TO ?? TO,
-      // Replying from the inbox goes straight back to the requester, which is
-      // the whole workflow: read, reply, attach the PDF.
-      reply_to: email,
-      subject: `CV request — ${name}${org ? ` (${org})` : ""}`,
-      text: lines.join("\n"),
-    }),
-  });
+  const subject = `CV request — ${name}${org ? ` (${org})` : ""}`;
+  const body = lines.join("\n");
 
-  if (!res.ok) {
-    console.error(`resend ${res.status}: ${(await res.text()).slice(0, 300)}`);
-    return json({ error: "Could not send the request." }, 502);
+  // Two ways out, tried in order. Email is the better one — replying to it goes
+  // straight back to the requester with the PDF attached. Telegram needs no
+  // third-party signup because the marsClaw bot already exists, so it is the
+  // fallback that makes this work today.
+  if (env.RESEND_API_KEY) {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: env.RESUME_REQUEST_FROM ?? FROM,
+        to: env.RESUME_REQUEST_TO ?? TO,
+        reply_to: email,
+        subject,
+        text: body,
+      }),
+    });
+
+    if (!res.ok) {
+      console.error(`resend ${res.status}: ${(await res.text()).slice(0, 300)}`);
+      return json({ error: "Could not send the request." }, 502);
+    }
+    return json({ ok: true }, 200);
   }
 
-  return json({ ok: true }, 200);
+  if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
+    const res = await fetch(
+      `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: env.TELEGRAM_CHAT_ID,
+          // Plain text, no parse_mode: a name containing an underscore or an
+          // asterisk would otherwise be rejected as broken markdown.
+          text: `📄 ${subject}\n\n${body}`,
+          disable_web_page_preview: true,
+        }),
+      }
+    );
+
+    if (!res.ok) {
+      console.error(`telegram ${res.status}: ${(await res.text()).slice(0, 300)}`);
+      return json({ error: "Could not send the request." }, 502);
+    }
+    return json({ ok: true }, 200);
+  }
+
+  return json({ error: "Mail delivery is not configured." }, 503);
 };
