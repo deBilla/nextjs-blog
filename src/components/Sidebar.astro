@@ -86,9 +86,10 @@ const socials = portfolio.socials
   }
 
   .name {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.55rem;
+    /* Block rather than flex so a wrapped surname starts at the dot's left
+       edge, flush with the tagline and nav, instead of being indented to hang
+       under the given name. */
+    display: block;
     font-size: var(--step-1);
     font-weight: 600;
     letter-spacing: -0.02em;
@@ -98,13 +99,14 @@ const socials = portfolio.socials
   }
 
   .mark {
-    flex: none;
+    display: inline-block;
     width: 8px;
     height: 8px;
+    margin-right: 0.55rem;
     border-radius: 50%;
     background: var(--accent);
-    /* Nudged onto the first line's baseline rather than the box's. */
-    transform: translateY(-0.15em);
+    /* Lifted off the baseline to sit against the x-height of the first line. */
+    vertical-align: 0.18em;
   }
 
   .tagline {

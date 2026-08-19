@@ -5,7 +5,7 @@ export const SITE = {
   /** Home page <title>. Names the person and what they do, for search results. */
   title: "Dimuthu Wickramanayake — AI Platform & Agent Infrastructure Engineer",
   description:
-    "Notes on AI platform and agent infrastructure, distributed systems, and reliability — by Dimuthu Wickramanayake.",
+    "Notes on AI platforms and agent infrastructure, distributed systems, and reliability — by Dimuthu Wickramanayake.",
   /** Short "who is this" line, shown under the name in the sidebar. */
   tagline:
     "AI platform & agent infrastructure engineer. Notes on distributed systems, LLM tooling, and the things that break in production.",
