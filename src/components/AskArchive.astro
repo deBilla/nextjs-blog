@@ -7,42 +7,52 @@
  * verbatim, with a link to its source. Framing it as a chat window would set an
  * expectation of prose that a retrieval engine cannot meet.
  */
+interface Props {
+  /** Trimmed-down presentation for the foot of a post, where it is a follow-up
+   * rather than the reason you came to the page. */
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
 ---
 
-<section class="ask" aria-labelledby="ask-heading">
-  <h2 id="ask-heading">Ask the archive</h2>
+<section class:list={["ask", "no-print", { compact }]} aria-label="Ask the archive">
+  <h2>Ask the archive</h2>
   <p class="lede">
-    Ask a question and get the passage that answers it, quoted from the post it came
-    from. Runs entirely in your browser — nothing you type leaves this page.
+    {
+      compact
+        ? "Got a question about this or anything else here? Ask, and get the passage that answers it — from all 97 posts, in your browser."
+        : "Ask a question and get the passage that answers it, quoted from the post it came from. Runs entirely in your browser — nothing you type leaves this page."
+    }
   </p>
 
   <label class="field">
     <span class="sr-only">Search the archive</span>
     <input
       type="search"
-      id="ask-input"
       placeholder="why did disabling the cache break the database?"
       autocomplete="off"
       spellcheck="false"
-      aria-describedby="ask-status"
     />
   </label>
 
-  <p class="status" id="ask-status" role="status" aria-live="polite"></p>
-  <div class="results" id="ask-results"></div>
+  <p class="status" role="status" aria-live="polite"></p>
+  <div class="results"></div>
 </section>
 
 <script>
   import { buildRuntime, highlight, search, type Runtime } from "../utils/search-runtime";
   import type { Chunk } from "../utils/search-index";
 
-  const input = document.getElementById("ask-input") as HTMLInputElement | null;
-  const results = document.getElementById("ask-results") as HTMLDivElement | null;
-  const status = document.getElementById("ask-status") as HTMLParagraphElement | null;
+  // Module scope, so two instances on one page share a single fetch and a
+  // single built index rather than each paying for their own.
+  let runtime: Runtime | null = null;
+  let loading: Promise<void> | null = null;
 
-  if (input && results && status) {
-    let runtime: Runtime | null = null;
-    let loading: Promise<void> | null = null;
+  for (const root of document.querySelectorAll<HTMLElement>(".ask")) {
+    const input = root.querySelector("input") as HTMLInputElement;
+    const results = root.querySelector(".results") as HTMLDivElement;
+    const status = root.querySelector(".status") as HTMLParagraphElement;
 
     /** Fetch and index on first use — never on page load. */
     const load = () => {
@@ -119,6 +129,15 @@
 </script>
 
 <style>
+  .ask.compact {
+    margin-top: 3rem;
+    padding: 1.25rem;
+  }
+
+  .ask.compact h2 {
+    font-size: var(--step-0);
+  }
+
   .ask {
     padding: 1.5rem;
     border: 1px solid var(--border);

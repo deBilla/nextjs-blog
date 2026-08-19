@@ -2,6 +2,7 @@
 import type { MarkdownHeading } from "astro";
 import BaseLayout from "./BaseLayout.astro";
 import TableOfContents from "../components/TableOfContents.astro";
+import AskArchive from "../components/AskArchive.astro";
 import {
   canonicalFor,
   countWords,
@@ -123,6 +124,8 @@ const schema = graph(
             </p>
           )
         }
+
+        <AskArchive compact />
 
         <nav class="post-nav no-print" aria-label="More posts">
           {
