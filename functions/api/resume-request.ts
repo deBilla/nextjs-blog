@@ -109,8 +109,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     });
 
     if (!res.ok) {
+      // 500 rather than 502: Cloudflare replaces a 502 body with its own error
+      // page, which hides the reason from anyone debugging this later.
       console.error(`resend ${res.status}: ${(await res.text()).slice(0, 300)}`);
-      return json({ error: "Could not send the request." }, 502);
+      return json({ error: "Could not send the request." }, 500);
     }
     return json({ ok: true }, 200);
   }
@@ -133,7 +135,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
     if (!res.ok) {
       console.error(`telegram ${res.status}: ${(await res.text()).slice(0, 300)}`);
-      return json({ error: "Could not send the request." }, 502);
+      return json({ error: "Could not send the request." }, 500);
     }
     return json({ ok: true }, 200);
   }
