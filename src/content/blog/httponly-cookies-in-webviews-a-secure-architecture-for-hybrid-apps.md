@@ -2,7 +2,7 @@
 title: "HttpOnly cookies in WebViews: a secure architecture for hybrid apps"
 date: "2026-09-28"
 preview: "Hi Guys, a lot of apps today are a native shell with a web page inside a WebView. The native side knows who the user is. The web side doesn't. How you close that gap decides most of your security story — and there's an iOS gotcha that quietly breaks the usual answer…"
-description: "How to hand a login from a native app to a WebView safely, why injected HttpOnly cookies fail on iOS, and an OWASP Top 10 2025 checklist for the rest."
+description: "How to hand a login from a native app to a WebView safely, the iOS HttpOnly cookie trap, and an OWASP Top 10 2025 checklist for the rest."
 tags: ["security", "mobile", "architecture"]
 ---
 Hi Guys, a lot of apps today are hybrids. The shell is native — Swift on iOS, Kotlin on Android — but some screens are just a web page loaded in a WebView. It's a great trade: you ship the web part whenever you like, without waiting for an app store review.
@@ -17,7 +17,7 @@ _Every box is tagged with the OWASP risks it covers. Follow the numbers 1 to 7 f
 
 ## Rule zero: never log in inside the WebView
 
-Before anything else, one rule from **RFC 8252** (OAuth 2.0 for Native Apps): the sign-in itself must never happen inside an embedded WebView. The native app opens the system browser — `ASWebAuthenticationSession` on iOS, Custom Tabs on Android — and the user signs in there.
+Before anything else, one rule from **RFC 8252** (OAuth 2.0 for Native Apps): the sign-in itself must never happen inside an embedded WebView. The native app opens the system browser — `ASWebAuthenticationSession` on iOS, Custom Tabs on Android — and the user signs in there, using PKCE.
 
 Why? Because the app that owns a WebView can read everything typed into it. A login page inside your WebView trains users to type their password into any app that shows them a login form. The system browser is a boundary the app can't see through.
 
@@ -31,19 +31,23 @@ You'd also mark the cookie **HttpOnly**, so that if your page ever has an XSS bu
 
 And here is the gotcha.
 
-> On iOS, a cookie you create in native code cannot be HttpOnly.
+> On iOS, the obvious way to build a cookie in native code has no HttpOnly option.
 
-`HTTPCookie(properties:)` has no documented key for HttpOnly. If you try to sneak one in with `HTTPCookiePropertyKey("HttpOnly")`, the initializer returns `nil` and the cookie is never set at all. Android's `CookieManager` honours the flag fine. So you end up with an architecture diagram that says "HttpOnly" and an iOS app where the cookie is readable by any script on the page.
+`HTTPCookie(properties:)` has no documented key for HttpOnly. If you try to sneak one in with `HTTPCookiePropertyKey("HttpOnly")`, the initializer returns `nil` and the cookie is never set at all. Android's `CookieManager` honours the flag fine. So it's very easy to end up with an architecture diagram that says "HttpOnly" and an iOS app where the cookie is readable by any script on the page.
 
-It still _authenticates_ correctly — the server checks the value either way. But the XSS protection you thought you had only exists on one platform.
+There is a way around it. `HTTPCookie.cookies(withResponseHeaderFields:for:)` builds cookies by parsing a `Set-Cookie` header string, and that route can carry the HttpOnly flag. But now each platform has its own cookie-building code, and on iOS you're relying on a side door rather than a documented property. That's exactly the kind of detail that silently breaks in a refactor, and nobody notices because login still works.
 
-The fix is simple once you see it: **HttpOnly works on both platforms when the server sets the cookie with a `Set-Cookie` header.** So let the server set it.
+It would still _authenticate_ correctly either way — the server checks the value regardless. What you lose is the XSS protection, and only on one platform, which is the worst kind of bug to catch.
+
+So here is the cleaner answer: **let WebKit and Android's WebView receive the cookie the normal way, through an HTTP `Set-Cookie` response.** Both handle that correctly, with no per-platform code. Let the server set it.
 
 ## The better approach: a one-time code exchange
 
 Follow the numbers in the diagram.
 
-**1–2. Native trades its ID token for a one-time code.** The native app calls your auth server with the ID token it got from sign-in. The server verifies it and returns a short random code. Make the code boring and strict: it lives for about **60 seconds**, it can be used **once**, and it's bound to the user and device it was minted for.
+**1–2. Native trades its ID token for a one-time code.** The native app calls your auth server with the ID token it got from sign-in. The server verifies it and returns a short random code. Make the code boring and strict: at least **128 bits** of randomness, it lives for about **60 seconds**, and it can be used **once**. The server remembers which user it was minted for.
+
+One thing I want to be honest about: in this flow the code _is_ the credential. When the WebView redeems it, the server has no proof which device is holding it. You could add that proof — have the native app keep a private key in the Secure Enclave or Android Keystore, register the public key, and sign a challenge at redemption — but for most consumer apps I wouldn't. A high-entropy, single-use, 60-second code is already a very small target. Just don't write "bound to the device" in your docs unless you've built the signature part.
 
 **3–4. The WebView redeems the code.** Native loads the exchange endpoint in the WebView, with the code in a **POST body**. Keep it out of the URL — URLs end up in logs, history and `Referer` headers, and even a 60-second secret doesn't belong there.
 
@@ -58,11 +62,29 @@ Every flag here is doing a job:
 
 - **`HttpOnly`** — scripts can't read it. And because the _server_ set it, this now holds on iOS too.
 - **`Secure`** — only ever sent over HTTPS.
-- **`SameSite=Strict`** — not sent on requests started by other sites, which shuts down CSRF from the outside. It still works for your own app, because `app.example.com` and `api.example.com` are the **same site** (same registrable domain), even though they're different origins.
+- **`SameSite=Strict`** — not sent on requests started by other sites. It still works for your own app, because `app.example.com` and `api.example.com` are the **same site** (same registrable domain), even though they're different origins. More on why that cuts both ways in a moment.
 - **`__Host-` prefix** — the browser refuses the cookie unless it's `Secure`, `Path=/` and has **no `Domain` attribute**. That means it's locked to the API host. A forgotten `staging-thing.example.com` subdomain can't read it or overwrite it. If you've ever written `Domain=.example.com` "so it works everywhere", this is why you shouldn't.
 - **`Max-Age=86400`** — one day, not a month. When it expires, the web page asks native to log in again (the dashed bridge line in the diagram), and native silently does steps 1–5 again.
 
 **6–7. The page loads and calls the API.** The web app comes from a static host, and every `fetch` to the API carries the cookie automatically. The JavaScript never sees a token on either platform.
+
+### Put the exchange on the host that owns the cookie
+
+This one bites people. Because `__Host-` cookies are host-only, **the exchange endpoint has to live on the same host your API calls go to.** If the exchange is at `api.example.com` and the page calls `api.example.com`, it works. If the exchange is at `auth.example.com` and the page calls `api.example.com`, the cookie is stored for `auth.example.com` and never gets sent to your API. Login "succeeds", and every API call returns 401.
+
+### SameSite is not your whole CSRF defence
+
+`SameSite=Strict` is a strong layer, but it's defence in depth, not the complete answer. Remember that every subdomain of `example.com` is the _same site_. If `old-marketing-page.example.com` gets compromised, requests it makes to `api.example.com` are same-site, and the browser will attach your cookie.
+
+CORS doesn't save you here either. CORS stops another origin from _reading_ your responses. It doesn't stop the request from being sent.
+
+So on every endpoint that changes state, also check the **`Origin` header** on the server and reject anything that isn't `https://app.example.com`. Accept only `application/json` bodies, so a plain HTML form can't post to you. For really sensitive browser flows, add a CSRF token on top.
+
+### Even better: one origin
+
+If you control the hosting, there's a simpler setup than two hosts. Serve the web app at `app.example.com/` and reverse-proxy `app.example.com/api/*` to your API. Put the exchange at `app.example.com/session/exchange`.
+
+Now everything is **same-origin**. The cookie belongs to `app.example.com`, and there's no CORS to configure, no `credentials: 'include'`, no preflight requests, and no chance of the "exchange on the wrong host" bug above. I'd pick this over two hosts whenever the infrastructure allows it. The diagram shows the two-host version because it's the more common starting point, and the harder one to get right.
 
 ## The cookie is not the security boundary
 
@@ -76,7 +98,7 @@ And the user id comes **from the verified cookie, never from the request body**.
 
 Now let's check the whole thing against the OWASP Top 10. Each tag in the diagram maps to one of these.
 
-**A01 — Broken Access Control.** User id from the cookie only, an ownership check on every call ("does this record belong to this user?"), CORS that allows exactly one origin, and internal services that aren't reachable from the internet at all.
+**A01 — Broken Access Control.** User id from the cookie only, an ownership check on every call ("does this record belong to this user?"), an `Origin` check on state-changing requests, and internal services that aren't reachable from the internet at all. CORS locked to one origin helps too, but only for who can _read_ responses.
 
 **A02 — Security Misconfiguration.** This is where hybrid apps quietly leak. On the WebView: a navigation allow-list so it can only load your two hosts, no `file://` access or universal file access, and web debugging switched off in release builds. On the web host: HSTS, `X-Content-Type-Options: nosniff`, a `Referrer-Policy` and a `Permissions-Policy`. In front of the API: a WAF.
 
@@ -88,7 +110,7 @@ Now let's check the whole thing against the OWASP Top 10. Each tag in the diagra
 
 **A06 — Insecure Design.** This is the one people skip, and I'll come back to it below. Rate limits per IP _and_ per user, limits on any number the client sends you, and an atomic per-user quota.
 
-**A07 — Authentication Failures.** Sign-in in the system browser, a single-use short-lived code, server-side verification with a revocation check, and a short session lifetime.
+**A07 — Authentication Failures.** Sign-in in the system browser with PKCE, a single-use short-lived code, server-side verification with a revocation check, and a short session lifetime.
 
 **A08 — Software or Data Integrity Failures.** The JS bridge between native and web should check who sent each message, and only accept a fixed set of message types. Retried side effects need an idempotency key so a retry can't happen twice. And CI should be the only thing that can deploy.
 
