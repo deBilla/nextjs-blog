@@ -35,3 +35,6 @@ medium-export-*/
 
 # Private CV detail — the achievement bullets handed out on request only.
 src/data/resume-detail.json
+
+# Research briefs from the blog-researcher agent — working notes, not content.
+research/
