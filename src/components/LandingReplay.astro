@@ -2,7 +2,7 @@
 /**
  * Interactive replay of a recorded ROS 2 landing simulation: a top view that follows
  * the vehicle, the onboard camera with ArUco detections, a height/state timeline and the
- * paper's speed estimate against the corrected one. Data and frames are static files
+ * printed speed formula (read literally) against the filtered estimate. Data and frames are static files
  * under /public, so the post itself stays plain MDX.
  */
 interface Props {
@@ -45,7 +45,7 @@ const { src } = Astro.props;
       <div class="label"><span>Relative speed on this run, m/s</span></div>
       <canvas class="spd"></canvas>
       <div class="legend">
-        <span><i class="dash"></i>truth</span><span><i class="corr"></i>corrected</span><span><i class="paper"></i>paper's equation</span>
+        <span><i class="dash"></i>truth</span><span><i class="corr"></i>filtered</span><span><i class="paper"></i>printed formula, literal</span>
       </div>
     </div>
   </div>
@@ -130,6 +130,11 @@ const { src } = Astro.props;
     static: "A stationary pad", straight: "A pad moving straight at 2 m/s",
     weave: "A pad weaving between lanes at 2.5 m/s", circle: "A pad driving a 15 m circle at 2.5 m/s",
   };
+  const MODE: Record<string, string> = { paper: "printed formulas", naive: "plain distance", compensated: "tilt-compensated", corrected: "filtered" };
+  const MODE_LONG: Record<string, string> = {
+    paper: "the formulas as printed, in the camera frame", naive: "plain distances in the camera frame",
+    compensated: "tilt compensation", corrected: "tilt compensation and the Kalman filter",
+  };
   // Must match the pad in the simulator: [size, centre x, centre y] in metres
   const PAD = [[0.32, -0.27, 0], [0.2, 0.25, 0.24], [0.16, 0, 0]];
   const fmt = (x: number | null | undefined, d = 2) => (x == null || !isFinite(x) ? "–" : x.toFixed(d));
@@ -159,7 +164,7 @@ const { src } = Astro.props;
       const r = data.runs[k];
       const b = document.createElement("button");
       b.type = "button";
-      b.textContent = `${r.meta.scenario} · ${r.meta.mode === "paper" ? "paper eq." : r.meta.mode}`;
+      b.textContent = `${r.meta.scenario} · ${MODE[r.meta.mode] ?? r.meta.mode}`;
       b.setAttribute("aria-pressed", "false");
       b.onclick = () => select(k);
       runsEl.appendChild(b);
@@ -171,7 +176,7 @@ const { src } = Astro.props;
       t = 0;
       [...runsEl.children].forEach((b, i) => b.setAttribute("aria-pressed", String(keys[i] === k)));
       const o = cur.outcome;
-      let txt = `${SCEN[cur.meta.scenario] ?? cur.meta.scenario}, flown with the ${cur.meta.mode === "paper" ? "paper's printed equations" : cur.meta.mode + " estimator"}. `;
+      let txt = `${SCEN[cur.meta.scenario] ?? cur.meta.scenario}, flown with ${MODE_LONG[cur.meta.mode] ?? cur.meta.mode}. `;
       txt += o.result === "landed"
         ? `Landed at t = ${fmt(o.t, 1)} s, ${fmt((o.err ?? 0) * 100, 0)} cm from the pad centre, vertical impact ${fmt(o.vz)} m/s.`
         : `Did not land within ${fmt(T(), 0)} s. Scrub along the state band to see where it aborted or lost the pad.`;
