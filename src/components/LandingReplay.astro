@@ -1,0 +1,329 @@
+---
+/**
+ * Interactive replay of a recorded ROS 2 landing simulation: a top view that follows
+ * the vehicle, the onboard camera with ArUco detections, a height/state timeline and the
+ * paper's speed estimate against the corrected one. Data and frames are static files
+ * under /public, so the post itself stays plain MDX.
+ */
+interface Props {
+  /** Folder under /public holding replay.json and frames/<run>/*.jpg */
+  src: string;
+}
+const { src } = Astro.props;
+---
+
+<figure class="replay" data-src={src}>
+  <div class="bar">
+    <div class="runs" role="group" aria-label="Recorded runs"></div>
+    <div class="scrub">
+      <button class="ctl play" type="button">Play</button>
+      <input type="range" min="0" max="1000" value="0" aria-label="Time" />
+      <span class="clock">0.0 s</span>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="cell">
+      <div class="label"><span>Top view · follows the vehicle · 1 m grid</span><span class="pill"></span></div>
+      <canvas class="top"></canvas>
+    </div>
+    <div class="cell">
+      <div class="label"><span>Onboard camera · ArUco detections</span><span class="camt"></span></div>
+      <div class="cam"><img alt="Downward camera frame with the detected markers outlined" /></div>
+      <dl class="readout">
+        <div><dt>Camera height</dt><dd data-k="h">–</dd></div>
+        <div><dt>Offset to pad</dt><dd data-k="e">–</dd></div>
+        <div><dt>Tilt</dt><dd data-k="tilt">–</dd></div>
+      </dl>
+    </div>
+  </div>
+  <div class="grid foot">
+    <div class="cell">
+      <div class="label"><span>Camera height above the pad, m</span></div>
+      <canvas class="side"></canvas>
+    </div>
+    <div class="cell">
+      <div class="label"><span>Relative speed on this run, m/s</span></div>
+      <canvas class="spd"></canvas>
+      <div class="legend">
+        <span><i class="dash"></i>truth</span><span><i class="corr"></i>corrected</span><span><i class="paper"></i>paper's equation</span>
+      </div>
+    </div>
+  </div>
+  <figcaption class="outcome">Loading the recorded runs…</figcaption>
+</figure>
+
+<style>
+  .replay {
+    /* series and state colours: validated categorical slots, stepped per theme */
+    --r-corr: #2a78d6; --r-paper: #eb6834; --r-desc: #1baf7a; --r-final: #eda100;
+    --r-good: #1d7f45; --r-bad: #c23b33; --r-ground: var(--bg-subtle); --r-pad: #fff; --r-mark: #111;
+    margin: 2rem 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    font-family: var(--font-ui);
+    overflow: hidden;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme="light"])) .replay {
+      --r-corr: #3987e5; --r-paper: #d95926; --r-desc: #199e70; --r-final: #c98500;
+      --r-good: #3fb26f; --r-bad: #e66767; --r-pad: #e9eeec; --r-mark: #0b0b0b;
+    }
+  }
+  :global(:root[data-theme="dark"]) .replay {
+    --r-corr: #3987e5; --r-paper: #d95926; --r-desc: #199e70; --r-final: #c98500;
+    --r-good: #3fb26f; --r-bad: #e66767; --r-pad: #e9eeec; --r-mark: #0b0b0b;
+  }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; padding: 0.75rem; border-bottom: 1px solid var(--border); }
+  .runs { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .runs :global(button), .ctl {
+    font: 500 0.8rem/1 var(--font-mono); padding: 0.5rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--border-strong); background: var(--bg-subtle); color: var(--ink); cursor: pointer;
+  }
+  .runs :global(button[aria-pressed="true"]) { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .runs :global(button):focus-visible, .ctl:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .scrub { display: flex; align-items: center; gap: 0.6rem; flex: 1 1 14rem; min-width: 0; }
+  .scrub input { flex: 1; min-width: 0; accent-color: var(--accent); }
+  .clock { font: 500 0.8rem/1 var(--font-mono); font-variant-numeric: tabular-nums; min-width: 6ch; text-align: right; }
+  .grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+  .grid.foot { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border-top: 1px solid var(--border); }
+  .cell { padding: 0.75rem; display: grid; gap: 0.5rem; align-content: start; min-width: 0; }
+  .cell + .cell { border-left: 1px solid var(--border); }
+  .label { display: flex; justify-content: space-between; gap: 0.5rem; font: 500 0.68rem/1.2 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); }
+  canvas { display: block; width: 100%; }
+  canvas.top { aspect-ratio: 4 / 3; border-radius: 4px; }
+  canvas.side, canvas.spd { aspect-ratio: 16 / 6; }
+  .cam { aspect-ratio: 4 / 3; background: #000; border-radius: 4px; overflow: hidden; }
+  .cam img { width: 100%; height: 100%; object-fit: cover; display: block; margin: 0; }
+  .readout { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin: 0; }
+  .readout div { display: grid; gap: 0.1rem; }
+  .readout dt { font: 0.68rem/1.2 var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-faint); }
+  .readout dd { margin: 0; font: 500 0.95rem/1.2 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--ink); }
+  .pill :global(span) { display: inline-flex; align-items: center; gap: 0.35rem; font: 600 0.7rem/1 var(--font-mono); padding: 0.25rem 0.45rem; border-radius: 99px; border: 1px solid currentColor; }
+  .legend { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; font: 0.75rem/1.3 var(--font-mono); color: var(--ink-muted); }
+  .legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 0.35rem; }
+  .legend i.corr { background: var(--r-corr); }
+  .legend i.paper { background: var(--r-paper); }
+  .legend i.dash { background: repeating-linear-gradient(90deg, var(--ink-muted) 0 4px, transparent 4px 7px); }
+  .outcome { padding: 0.6rem 0.75rem; border-top: 1px solid var(--border); font: 0.82rem/1.5 var(--font-mono); color: var(--ink-muted); }
+  @media (max-width: 760px) {
+    .grid, .grid.foot { grid-template-columns: minmax(0, 1fr); }
+    .cell + .cell { border-left: 0; border-top: 1px solid var(--border); }
+  }
+</style>
+
+<script>
+  type Row = [number, string, number, number, number, number, number, number, number, number, number, number[] | null];
+  type Run = {
+    meta: { scenario: string; mode: string };
+    outcome: { result?: string; t?: number; err?: number; vz?: number; vxy?: number };
+    rows: Row[];
+    frames: [number, string][];
+    est: [number, number, number | null, number | null][];
+  };
+
+  const STATE: Record<string, string> = {
+    SEARCH: "--ink-faint", INIT: "--ink-faint", TRACK: "--r-corr", DESCEND: "--r-desc",
+    FINAL: "--r-final", CUT: "--r-paper", LANDED: "--r-good", ABORT: "--r-bad",
+  };
+  const SCEN: Record<string, string> = {
+    static: "A stationary pad", straight: "A pad moving straight at 2 m/s",
+    weave: "A pad weaving between lanes at 2.5 m/s", circle: "A pad driving a 15 m circle at 2.5 m/s",
+  };
+  // Must match the pad in the simulator: [size, centre x, centre y] in metres
+  const PAD = [[0.32, -0.27, 0], [0.2, 0.25, 0.24], [0.16, 0, 0]];
+  const fmt = (x: number | null | undefined, d = 2) => (x == null || !isFinite(x) ? "–" : x.toFixed(d));
+
+  for (const root of document.querySelectorAll<HTMLElement>(".replay[data-src]")) setup(root);
+
+  async function setup(root: HTMLElement) {
+    const base = root.dataset.src!.replace(/\/$/, "");
+    const q = <T extends Element>(s: string) => root.querySelector(s) as T;
+    const css = (n: string) => getComputedStyle(root).getPropertyValue(n).trim();
+    const top = q<HTMLCanvasElement>("canvas.top"), side = q<HTMLCanvasElement>("canvas.side"), spd = q<HTMLCanvasElement>("canvas.spd");
+    const scrub = q<HTMLInputElement>("input"), clock = q<HTMLElement>(".clock"), playBtn = q<HTMLButtonElement>(".play");
+    const img = q<HTMLImageElement>(".cam img"), outcome = q<HTMLElement>(".outcome");
+
+    let data: { runs: Record<string, Run> };
+    try {
+      data = await (await fetch(`${base}/replay.json`)).json();
+    } catch {
+      outcome.textContent = "The recorded runs couldn't be loaded.";
+      return;
+    }
+    const keys = Object.keys(data.runs);
+    let cur: Run & { key: string }, t = 0, playing = false, last = 0;
+
+    const runsEl = q<HTMLElement>(".runs");
+    for (const k of keys) {
+      const r = data.runs[k];
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = `${r.meta.scenario} · ${r.meta.mode === "paper" ? "paper eq." : r.meta.mode}`;
+      b.setAttribute("aria-pressed", "false");
+      b.onclick = () => select(k);
+      runsEl.appendChild(b);
+    }
+
+    const T = () => cur.rows[cur.rows.length - 1][0];
+    function select(k: string) {
+      cur = { ...data.runs[k], key: k };
+      t = 0;
+      [...runsEl.children].forEach((b, i) => b.setAttribute("aria-pressed", String(keys[i] === k)));
+      const o = cur.outcome;
+      let txt = `${SCEN[cur.meta.scenario] ?? cur.meta.scenario}, flown with the ${cur.meta.mode === "paper" ? "paper's printed equations" : cur.meta.mode + " estimator"}. `;
+      txt += o.result === "landed"
+        ? `Landed at t = ${fmt(o.t, 1)} s, ${fmt((o.err ?? 0) * 100, 0)} cm from the pad centre, vertical impact ${fmt(o.vz)} m/s.`
+        : `Did not land within ${fmt(T(), 0)} s. Scrub along the state band to see where it aborted or lost the pad.`;
+      outcome.textContent = txt;
+      draw();
+    }
+    const rowAt = (tt: number) => {
+      const R = cur.rows;
+      let lo = 0, hi = R.length - 1;
+      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (R[m][0] <= tt) lo = m; else hi = m; }
+      return R[lo];
+    };
+    function fit(c: HTMLCanvasElement): [CanvasRenderingContext2D, number, number] {
+      const r = c.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+      const w = Math.max(10, Math.round(r.width * dpr)), h = Math.max(10, Math.round(r.height * dpr));
+      if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+      const g = c.getContext("2d")!;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      g.font = `11px ${css("--font-mono") || "monospace"}`;
+      return [g, r.width, r.height];
+    }
+
+    function drawTop(row: Row) {
+      const [g, W, H] = fit(top);
+      const [tt, st, dx, dy, , tx, ty, , tyaw, , hc, imp] = row;
+      const S = Math.min(W, H) / 9, cx = W / 2, cy = H / 2;
+      const P = (x: number, y: number): [number, number] => [cx + (x - tx) * S, cy - (y - ty) * S];
+      g.fillStyle = css("--bg-subtle"); g.fillRect(0, 0, W, H);
+      g.strokeStyle = css("--border"); g.lineWidth = 1; g.beginPath();
+      for (let x = Math.floor(tx - W / S); x <= tx + W / S; x++) { const [px] = P(x, 0); g.moveTo(px, 0); g.lineTo(px, H); }
+      for (let y = Math.floor(ty - H / S); y <= ty + H / S; y++) { const [, py] = P(0, y); g.moveTo(0, py); g.lineTo(W, py); }
+      g.stroke();
+      const trail = (ix: number, iy: number, col: string) => {
+        g.strokeStyle = col; g.lineWidth = 2; g.beginPath(); let first = true;
+        for (const r of cur.rows) {
+          if (r[0] > tt) break;
+          if (r[0] < tt - 12) continue;
+          const [px, py] = P(r[ix] as number, r[iy] as number);
+          first ? g.moveTo(px, py) : g.lineTo(px, py); first = false;
+        }
+        g.stroke();
+      };
+      trail(5, 6, css("--ink-faint"));
+      trail(2, 3, css(STATE[st] ?? "--r-corr"));
+      // vehicle deck and pad
+      g.save();
+      const [px, py] = P(tx, ty); g.translate(px, py); g.rotate(-(tyaw - Math.PI / 2));
+      g.globalAlpha = 0.5; g.fillStyle = css("--ink-muted"); g.fillRect(-0.8 * S, -0.65 * S, 1.6 * S, 1.3 * S); g.globalAlpha = 1;
+      g.fillStyle = css("--r-pad"); g.fillRect(-0.5 * S, -0.5 * S, S, S);
+      g.fillStyle = css("--r-mark");
+      for (const [s, mx, my] of PAD) g.fillRect((mx - s / 2) * S, (-my - s / 2) * S, s * S, s * S);
+      g.restore();
+      // drone: shadow, X frame and rotors (drawn slightly larger the higher it is)
+      const [qx, qy] = P(dx, dy), col = css(STATE[st] ?? "--r-corr");
+      const arm = 0.25 * S * (1 + Math.min(hc, 6) * 0.06);
+      g.fillStyle = "rgba(0,0,0,.18)"; g.beginPath(); g.arc(qx + hc * 3, qy + hc * 3, 0.32 * S, 0, 7); g.fill();
+      g.strokeStyle = col; g.lineWidth = 3; g.beginPath();
+      g.moveTo(qx - arm, qy - arm); g.lineTo(qx + arm, qy + arm); g.moveTo(qx + arm, qy - arm); g.lineTo(qx - arm, qy + arm); g.stroke();
+      g.lineWidth = 2;
+      for (const [ax, ay] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) { g.beginPath(); g.arc(qx + ax * arm, qy + ay * arm, arm * 0.45, 0, 7); g.stroke(); }
+      if (imp && st === "FINAL") {
+        // where the pad will be relative to the drone when the skids touch, if it drops now
+        g.strokeStyle = css("--r-final"); g.setLineDash([3, 3]); g.beginPath();
+        g.arc(qx + imp[0] * S, qy - imp[1] * S, 0.12 * S, 0, 7); g.stroke(); g.setLineDash([]);
+      }
+      g.fillStyle = css("--ink-muted"); g.fillText("1 m", 10, H - 20); g.fillRect(10, H - 13, S, 3);
+    }
+
+    function axes(g: CanvasRenderingContext2D, W: number, Y: (v: number) => number, ticks: number[], l: number, r: number) {
+      g.strokeStyle = css("--border"); g.fillStyle = css("--ink-faint"); g.lineWidth = 1;
+      for (const v of ticks) { g.beginPath(); g.moveTo(l, Y(v)); g.lineTo(W - r, Y(v)); g.stroke(); g.fillText(String(v), 6, Y(v) + 4); }
+    }
+
+    function drawSide(row: Row) {
+      const [g, W, H] = fit(side);
+      const R = cur.rows, l = 30, r = 6, tp = 6, b = 24, hMax = 6.5, TT = T();
+      const X = (v: number) => l + (v / TT) * (W - l - r), Y = (v: number) => H - b - (v / hMax) * (H - tp - b);
+      g.clearRect(0, 0, W, H);
+      axes(g, W, Y, [0, 2, 4, 6], l, r);
+      let s0 = 0;
+      for (let i = 1; i <= R.length; i++) {
+        if (i === R.length || R[i][1] !== R[s0][1]) {
+          g.fillStyle = css(STATE[R[s0][1]] ?? "--ink-faint");
+          g.fillRect(X(R[s0][0]), H - b + 6, Math.max(1, X(R[Math.min(i, R.length - 1)][0]) - X(R[s0][0]) - 1), 6);
+          s0 = i;
+        }
+      }
+      g.strokeStyle = css("--r-corr"); g.lineWidth = 2; g.beginPath();
+      R.forEach((q, i) => { const x = X(q[0]), y = Y(Math.max(0, q[10])); i ? g.lineTo(x, y) : g.moveTo(x, y); });
+      g.stroke();
+      g.strokeStyle = css("--ink"); g.lineWidth = 1; g.beginPath(); g.moveTo(X(row[0]), tp); g.lineTo(X(row[0]), H - b + 12); g.stroke();
+      g.fillStyle = css("--ink-faint"); g.fillText("state", l, H - 2); g.fillText(`${fmt(TT, 0)} s`, W - r - 30, H - 2);
+    }
+
+    function drawSpd(row: Row) {
+      const [g, W, H] = fit(spd);
+      const E = cur.est, l = 30, r = 6, tp = 6, b = 18, vMax = 8, TT = T();
+      const X = (v: number) => l + (v / TT) * (W - l - r), Y = (v: number) => H - b - (Math.min(v, vMax) / vMax) * (H - tp - b);
+      g.clearRect(0, 0, W, H);
+      axes(g, W, Y, [0, 4, 8], l, r);
+      const line = (ix: 1 | 2 | 3, col: string, dash: number[], w: number) => {
+        g.strokeStyle = col; g.lineWidth = w; g.setLineDash(dash); g.beginPath(); let pen = false;
+        for (const e of E) {
+          const v = e[ix];
+          if (v == null || !isFinite(v)) { pen = false; continue; }
+          const x = X(e[0]), y = Y(v); pen ? g.lineTo(x, y) : g.moveTo(x, y); pen = true;
+        }
+        g.stroke(); g.setLineDash([]);
+      };
+      line(2, css("--r-paper"), [], 1.5);
+      line(3, css("--r-corr"), [], 2);
+      line(1, css("--ink-muted"), [4, 3], 1.5);
+      g.strokeStyle = css("--ink"); g.lineWidth = 1; g.beginPath(); g.moveTo(X(row[0]), tp); g.lineTo(X(row[0]), H - b); g.stroke();
+      g.fillStyle = css("--ink-faint"); g.fillText("clipped at 8", W - r - 80, tp + 10);
+    }
+
+    function draw() {
+      if (!cur) return;
+      const row = rowAt(t);
+      drawTop(row); drawSide(row); drawSpd(row);
+      let f = cur.frames[0];
+      for (const fr of cur.frames) { if (fr[0] <= t + 0.01) f = fr; else break; }
+      if (f) {
+        const url = `${base}/frames/${cur.key}/${f[1]}`;
+        if (img.getAttribute("src") !== url) img.src = url;
+        q<HTMLElement>(".camt").textContent = `t = ${fmt(f[0], 1)} s`;
+      }
+      const st = row[1];
+      q<HTMLElement>(".pill").innerHTML = `<span style="color:var(${STATE[st] ?? "--ink-faint"})">${st}</span>`;
+      q<HTMLElement>('[data-k="h"]').textContent = `${fmt(row[10])} m`;
+      q<HTMLElement>('[data-k="e"]').textContent = `${fmt(Math.hypot(row[5] - row[2], row[6] - row[3]))} m`;
+      q<HTMLElement>('[data-k="tilt"]').textContent = `${fmt(row[9], 1)}°`;
+      scrub.value = String(Math.round((t / T()) * 1000));
+      clock.textContent = `${fmt(t, 1)} s`;
+    }
+    function loop(ts: number) {
+      if (!playing) return;
+      t += last ? (ts - last) / 1000 : 0; last = ts;
+      if (t >= T()) { t = T(); toggle(); }
+      draw();
+      requestAnimationFrame(loop);
+    }
+    function toggle() {
+      playing = !playing; last = 0;
+      playBtn.textContent = playing ? "Pause" : "Play";
+      if (playing) { if (t >= T()) t = 0; requestAnimationFrame(loop); }
+    }
+    playBtn.onclick = toggle;
+    scrub.oninput = () => { t = (Number(scrub.value) / 1000) * T(); draw(); };
+    window.addEventListener("resize", draw);
+    new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", draw);
+    select(keys[0]);
+  }
+</script>
