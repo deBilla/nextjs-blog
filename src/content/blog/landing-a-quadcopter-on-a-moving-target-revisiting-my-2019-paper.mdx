@@ -9,6 +9,8 @@ import LandingReplay from "../../components/LandingReplay.astro";
 
 Hi Guys, back in 2019 at the University of Peradeniya, Rajitha Rajasooriya, Kavin Ranawella, Dr. Namal Karunarathne and I wrote a paper called *Landing a Quadcopter on to a moving landing target using Computer Vision*. I reread it recently and noticed that some of the equations don't do what the text says they do. So I rebuilt the whole thing in **ROS 2**, wrote a simulator to test it, fixed the equations and measured the difference. In this post I'll go through why the paper exists, what was wrong, how the ROS 2 version works, and what the simulation says. There's an interactive replay in the middle so you can watch it land.
 
+All the code is open source at [deBilla/moving-target-landing-ros2](https://github.com/deBilla/moving-target-landing-ros2): the ROS 2 package, the simulator, the experiments and the tests.
+
 ## Why we wrote the paper
 
 Landing a quadcopter on the ground is easy. Landing it on a **moving** vehicle is not. The drone has to find the target, work out how fast it's moving and in which direction, cope with wind, and still touch down on a small pad.
@@ -134,6 +136,20 @@ When the corrected version did land, it was 4 to 14 cm from the centre on averag
 The three-marker pad does what we wanted. Between 1.2 m and 4 m the pad was detected in 86 to 90% of frames. Below 0.5 m, though, the large and medium markers are almost always cut off and the small one does all the work.
 
 The paper never said how big the markers should be. My first try used a 10 cm centre marker, and the camera lost it in the last 30 cm unless the drone was within 3 cm of the centre. At that height a 70° camera only sees about 42 × 31 cm of the pad. I ended up with 32, 20 and 16 cm markers, and even then the final half second before the drop runs on the Kalman filter's prediction. We wrote about this problem in the paper too: when the drone is very close, it can't see the target any more.
+
+## Run it yourself
+
+You only need Docker. Build the image once, then fly a landing through the full ROS 2 graph:
+
+```bash
+git clone https://github.com/deBilla/moving-target-landing-ros2.git
+cd moving-target-landing-ros2
+docker build -f docker/Dockerfile -t mtl_landing:jazzy .
+docker/run_ros_sim.sh straight corrected   # scenario, then estimator
+docker/run_ros_sim.sh straight paper       # same flight with the printed equations
+```
+
+Each run writes a JSON log and the camera frames into `results/`. The scenarios are `static`, `straight`, `accelerating`, `circle`, `weave`, `stop_go` and `fast`, and the estimators are `paper`, `naive`, `compensated` and `corrected`. The README has the commands for the batch experiments and the unit tests.
 
 ## Wrapping up
 
