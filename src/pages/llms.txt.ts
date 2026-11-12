@@ -12,24 +12,21 @@ import { SITE } from "../site";
  * convention that might matter later: everything here is derived from the same
  * frontmatter that already feeds the sitemap and RSS, so it cannot go stale.
  *
- * Only public material appears. The résumé entry points at the summary page;
- * the withheld detail is not described here either.
+ * Only public material appears.
  */
 export const GET: APIRoute = async () => {
   const posts = await getPosts();
-  const { resume } = portfolio;
 
   const lines: string[] = [
     `# ${portfolio.name}`,
     "",
     `> ${SITE.tagline}`,
     "",
-    `${resume.description}`,
+    `${portfolio.resume.description}`,
     "",
     "## Pages",
     "",
     `- [About](${SITE.url}/about): who I am and what I work on.`,
-    `- [Resume](${SITE.url}/resume): roles, scope and stack. ${resume.experiences[0].position} at ${resume.experiences[0].company} since ${resume.experiences[0].dates.split("–")[0].trim()}. Full detail is available on request through the form on that page.`,
     `- [Writing](${SITE.url}/blogs): ${posts.length} posts.`,
     "",
     "## Writing",
@@ -43,7 +40,7 @@ export const GET: APIRoute = async () => {
     );
   }
 
-  lines.push("", "## Contact", "", `- ${SITE.url}/resume — request the full CV or get in touch.`, "");
+  lines.push("");
 
   return new Response(lines.join("\n"), {
     headers: {

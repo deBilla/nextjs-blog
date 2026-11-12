@@ -21,5 +21,4 @@ export const ADSENSE_CLIENT = "ca-pub-4067803003775557";
 export const NAV = [
   { href: "/blogs", label: "Writing" },
   { href: "/about", label: "About" },
-  { href: "/resume", label: "Resume" },
 ] as const;
