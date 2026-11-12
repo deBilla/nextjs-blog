@@ -4,7 +4,7 @@ date: "2026-11-12"
 preview: "Hi Guys, I had Claude Code and Antigravity sessions running on the same laptop with no idea the others existed. I started building my own coordination system, then threw it away and went looking for open source. Here's every option I compared, the license surprise that knocked out the most popular one, and what I ended up with…"
 description: "Comparing open-source tools that let Claude Code and Antigravity sessions on one laptop message each other and claim files, and why I chose Concord."
 tags: ["ai", "llm"]
-draft: true
+draft: false
 ---
 Hi Guys, these days I usually have two or three coding agents open at once: a Claude Code session in one terminal and an Antigravity (`agy`) session in another, sometimes on the same repo. They have no idea the others exist. They edit the same files, and when one runs out of budget the other has to start from scratch.
 
