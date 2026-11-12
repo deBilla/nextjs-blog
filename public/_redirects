@@ -8,6 +8,7 @@
 /blog/*              /blogs/:splat 301
 /posts               /blogs        301
 /posts/*             /blogs/:splat 301
-/cv                  /resume       301
+/cv                  /about        301
+/resume              /about        301
 /feed                /rss.xml      301
 /feed.xml            /rss.xml      301

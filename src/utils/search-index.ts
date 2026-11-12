@@ -6,11 +6,6 @@
  * for a corpus this size (97 posts, ~100k words, ~800 passages) is both smaller
  * and faster than any embedding approach — a few hundred KB and well under a
  * millisecond to score.
- *
- * The résumé is indexed from the PUBLIC summary only. The achievement bullets in
- * `resume-detail.json` are deliberately withheld from the site, and shipping
- * them inside a machine-readable index would undo that far more thoroughly than
- * putting them back on the page.
  */
 
 export interface Chunk {
@@ -22,10 +17,8 @@ export interface Chunk {
   u: string;
   /** Sub-heading within the document, when the source had one. */
   h?: string;
-  /** Display date, e.g. "Oct 2025". Absent for the résumé. */
+  /** Display date, e.g. "Oct 2025". */
   w?: string;
-  /** "resume" marks the CV passages, which rank differently — see the runtime. */
-  k?: "resume";
 }
 
 const STOPWORDS = new Set(

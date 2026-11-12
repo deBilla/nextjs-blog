@@ -55,44 +55,9 @@ export function buildRuntime(chunks: Chunk[]): Runtime {
   return { chunks, postings, lengths, avgdl: total / Math.max(1, chunks.length) };
 }
 
-/**
- * Words that mean "tell me about him" rather than "find me a post".
- *
- * A question like "where does he work" is answered by one short résumé passage
- * competing against 800 long posts that happen to use the word "work" — BM25
- * alone loses that fight every time. Detecting the intent and boosting the CV
- * passages fixes it without touching the ranking for content queries, which
- * were already good.
- */
-const PROFILE_INTENT = new Set(
-  ("job jobs role roles work works worked working employer employed employment career" +
-    " experience experienced background cv resume resumé hire hiring hired recruit recruiter" +
-    " skill skills tech stack know knows expertise expert profile education degree studied" +
-    " university salary contact available availability current currently now company companies")
-    .split(" ")
-);
-
-const PROFILE_BOOST = 3;
-
-/** How many CV passages are guaranteed a place when the question is about him. */
-const PROFILE_SLOTS = 2;
-
-/**
- * True when the question is about him rather than about a topic.
- *
- * Callers use this to decide whether to answer with the résumé referral. It has
- * to be intent-driven: "kafka saga pattern" pulls in a CV project that mentions
- * Kafka, and answering that with "see my resume" would be a non-sequitur.
- */
-export function hasProfileIntent(query: string): boolean {
-  return tokenize(query).some((t) => PROFILE_INTENT.has(t));
-}
-
 export function search(query: string, rt: Runtime, limit = 4): Result[] {
   const terms = [...new Set(tokenize(query))];
   if (!terms.length) return [];
-
-  const wantsProfile = terms.some((t) => PROFILE_INTENT.has(t));
 
   const scores = new Map<number, number>();
   const matched = new Map<number, Set<string>>();
@@ -122,8 +87,7 @@ export function search(query: string, rt: Runtime, limit = 4): Result[] {
       // of it, which single-term BM25 sums otherwise reward too heavily.
       score:
         score *
-        (1 + 0.35 * ((matched.get(i)?.size ?? 1) - 1)) *
-        (wantsProfile && rt.chunks[i].k === "resume" ? PROFILE_BOOST : 1),
+        (1 + 0.35 * ((matched.get(i)?.size ?? 1) - 1)),
       matched: matched.get(i) ?? new Set<string>(),
     }))
     .sort((a, b) => b.score - a.score);
@@ -133,21 +97,12 @@ export function search(query: string, rt: Runtime, limit = 4): Result[] {
   // several sources.
   const seen = new Set<string>();
   const diverse = ranked.filter((r) => {
-    const key = r.chunk.k === "resume" ? `resume:${r.chunk.h}` : r.chunk.d;
-    if (seen.has(key)) return false;
-    seen.add(key);
+    if (seen.has(r.chunk.d)) return false;
+    seen.add(r.chunk.d);
     return true;
   });
 
-  if (!wantsProfile) return diverse.slice(0, limit);
-
-  // "where does he work now" matches only the word "work", which 800 posts also
-  // use — no amount of boosting reliably wins that on term statistics alone. So
-  // for questions about him, the best CV passages take the first slots outright
-  // and the writing fills the rest. Predictable beats clever here.
-  const cv = diverse.filter((r) => r.chunk.k === "resume").slice(0, PROFILE_SLOTS);
-  const rest = diverse.filter((r) => r.chunk.k !== "resume");
-  return [...cv, ...rest].slice(0, limit);
+  return diverse.slice(0, limit);
 }
 
 /** Wrap matched terms in <mark>, escaping everything else. */

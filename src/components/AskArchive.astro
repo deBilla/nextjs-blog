@@ -1,6 +1,6 @@
 ---
 /**
- * "Ask the archive" — retrieval over every post plus the public résumé summary.
+ * "Ask the archive" — retrieval over every post.
  *
  * Deliberately not a chatbot. There is no model here, so nothing can synthesise
  * an answer; what it returns is the passage that answers the question, quoted
@@ -51,7 +51,7 @@ const indexUrl = `/search-index.json?v=${await getIndexVersion()}`;
 </section>
 
 <script>
-  import { buildRuntime, hasProfileIntent, highlight, search, type Runtime } from "../utils/search-runtime";
+  import { buildRuntime, highlight, search, type Runtime } from "../utils/search-runtime";
   import type { Chunk } from "../utils/search-index";
 
   // Module scope, so two instances on one page share a single fetch and a
@@ -88,43 +88,10 @@ const indexUrl = `/search-index.json?v=${await getIndexVersion()}`;
     const escapeAttr = (s: string) =>
       s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 
-    // A card, not a quote. Questions about his work get acknowledged and routed
-    // to the résumé rather than having CV passages read out in a search widget —
-    // the summary lives on one page by design, and the detail is only handed
-    // over on request.
-    //
-    // On the résumé itself, "see the resume" would be pointing at the page the
-    // reader is already on, so the same question routes to the request form.
-    const onResume = location.pathname.replace(/\/$/, "") === "/resume";
-
-    const profileCard = onResume
-      ? `
-      <article class="hit profile">
-        <p class="source">About my work</p>
-        <p class="answer">
-          The summary is on this page — roles, scope and stack. The detailed project
-          work and outcomes for each role are available on request.
-        </p>
-        <a href="#request-heading">Ask for the full CV →</a>
-      </article>`
-      : `
-      <article class="hit profile">
-        <p class="source">About my work</p>
-        <p class="answer">
-          Questions about my experience are answered on the resume page — roles, scope
-          and stack are there, and the detailed project work is available on request.
-        </p>
-        <a href="/resume">See the resume →</a>
-      </article>`;
-
     const render = (query: string) => {
       if (!runtime) return;
 
-      // Ask for more than we show: the résumé hits are consumed as a signal
-      // rather than rendered, so they must not eat the visible slots.
-      const hits = search(query, runtime, 6);
-      const isProfile = hasProfileIntent(query);
-      const shown = hits.filter((h) => h.chunk.k !== "resume").slice(0, 3);
+      const hits = search(query, runtime, 3);
 
       if (!hits.length) {
         results.innerHTML = "";
@@ -133,7 +100,7 @@ const indexUrl = `/search-index.json?v=${await getIndexVersion()}`;
       }
 
       status.textContent = "";
-      results.innerHTML = (isProfile ? profileCard : "") + shown
+      results.innerHTML = hits
         .map(({ chunk, matched }) => {
           const meta = [chunk.d, chunk.w].filter(Boolean).join(" · ");
           const heading = chunk.h ? `<span class="heading">${escapeAttr(chunk.h)}</span>` : "";
@@ -281,13 +248,5 @@ const indexUrl = `/search-index.json?v=${await getIndexVersion()}`;
     display: inline-block;
     margin-top: 0.5rem;
     font-size: var(--step--1);
-  }
-
-  /* The referral card answers rather than quotes, so it reads as a statement
-     instead of an excerpt. */
-  .results :global(.profile .answer) {
-    margin-top: 0.35rem;
-    max-width: var(--measure);
-    color: var(--ink);
   }
 </style>
